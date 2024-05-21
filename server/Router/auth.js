@@ -7,17 +7,25 @@ authRouter.post("/register", async (req, res) => {
   try {
     const { username, password, role } = req.body;
 
-    const created_at = new Intl.DateTimeFormat("en-GB").format(new Date());
+    if (!username || !password || !role) {
+      return res.status(400).json({
+        error: "Please provide username, password.",
+      });
+    }
 
-    const signUp = await pool.query(
+    const created_at = new Date().toISOString();
+
+    await pool.query(
       `INSERT INTO users (username, password, role, created_at)
-         VALUES ($1, crypt($2, gen_salt('bf')), $3, $4) `,
+       VALUES ($1, crypt($2, gen_salt('bf')), $3, $4)`,
       [username, password, role, created_at]
     );
-    return res.json({
+
+    return res.status(201).json({
       message: "User registered successfully!",
     });
   } catch (error) {
+    console.error("Error during user registration:", error);
     return res.status(500).json({
       error: "Internal Server Error",
     });
