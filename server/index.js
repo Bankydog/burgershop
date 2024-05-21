@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import dataRouter from "./Router/Data.js";
+import authRouter from "./Router/auth.js";
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/posts", dataRouter);
+app.use("/auth", authRouter);
 
 app.get("/", (req, res) => {
   res.send("Hellllllllllooooo");
