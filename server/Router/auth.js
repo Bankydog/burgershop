@@ -32,4 +32,53 @@ authRouter.post("/register", async (req, res) => {
   }
 });
 
+authRouter.post("/login", async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    ///////////// check input //////////////////
+    if (!username || !password) {
+      return res.status(400).json({
+        message: "Username and password are required",
+      });
+    }
+
+    ///////////// check username //////////////////
+    const checkUser = await pool.query(
+      `SELECT username, password FROM users WHERE username = $1`,
+      [username]
+    );
+
+    if (checkUser.rows.length === 0) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    const user = checkUser.rows[0];
+
+    ///////////// check password //////////////////
+    const checkPassword = await pool.query(
+      `SELECT username FROM users WHERE username = $1 AND password = crypt($2, password)`,
+      [username, password]
+    );
+
+    if (checkPassword.rows.length === 0) {
+      return res.status(401).json({
+        message: "Password incorrect",
+      });
+    }
+    ///////////// jwt //////////////////
+
+    return res.json({
+      message: "Login successful!",
+    });
+  } catch (error) {
+    console.error("Error during login:", error);
+    return res.status(500).json({
+      error: "Internal Server Error",
+    });
+  }
+});
+
 export default authRouter;
