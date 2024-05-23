@@ -1,7 +1,13 @@
 import React from "react";
+import Navbar from "../navbar/navbar.jsx";
 
 export default function HomePage() {
   return (
-    <div className="h-full w-full flex justify-center items-center">error</div>
+    <>
+      <Navbar />
+      <div className="h-screen w-full flex justify-center items-center">
+        home
+      </div>
+    </>
   );
 }
