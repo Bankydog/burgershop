@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import Navbar from "../navbar/navbar.jsx";
-// import { useAuth } from "../../contexts/authentication.jsx";
+import { useAuth } from "../context/Authentication.jsx";
 import { useNavigate } from "react-router-dom";
 
 export default function RegisterPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  // const { register } = useAuth();
+  const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -15,13 +15,13 @@ export default function RegisterPage() {
     const role = "user";
     const data = { username, password, role };
 
-    // try {
-    //   await register(data, navigate);
-    //   setUsername("");
-    //   setPassword("");
-    // } catch (error) {
-    //   console.error("Error registering user:", error);
-    // }
+    try {
+      await register(data, navigate);
+      setUsername("");
+      setPassword("");
+    } catch (error) {
+      console.error("Error registering user:", error);
+    }
   };
 
   return (
