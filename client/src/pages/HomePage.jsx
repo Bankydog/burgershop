@@ -2,6 +2,8 @@ import React from "react";
 
 export default function HomePage() {
   return (
-    <div className="h-full w-full flex justify-center items-center">error</div>
+    <div className="h-screen w-screen flex justify-center items-center">
+      home
+    </div>
   );
 }
