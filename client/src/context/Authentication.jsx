@@ -1,7 +1,11 @@
-import React, { createContext } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import React, { useContext, createContext } from "react";
 
-export default function Authentication() {
-  return <div></div>;
+const AuthContext = createContext();
+
+function AuthProvider({ children }) {
+  return <AuthContext.Provider value={{}}>{children}</AuthContext.Provider>;
 }
+
+const useAuth = () => useContext(AuthContext);
+
+export { AuthProvider, useAuth };
