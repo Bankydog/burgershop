@@ -17,9 +17,22 @@ function AuthProvider({ children }) {
   ////////////////// register //////////////////
 
   const register = async (data) => {
-    await axios.post("http://localhost:4000/auth/register", data);
-    alert("Register is successfull");
-    navigate("/login");
+    try {
+      await axios.post("http://localhost:4000/auth/register", data);
+      alert("Register is successfull");
+      navigate("/login");
+    } catch (error) {
+      if (error.response) {
+        console.error("Error response:", error.response.data);
+        alert(`Registration failed: ${error.response.data.error}`);
+      } else if (error.request) {
+        console.error("Error request:", error.request);
+        alert("Registration failed: No response from server.");
+      } else {
+        console.error("Error message:", error.message);
+        alert(`Registration failed: ${error.message}`);
+      }
+    }
   };
 
   ////////////////// login //////////////////
@@ -39,8 +52,19 @@ function AuthProvider({ children }) {
     }
   };
 
+  ////////////////// logout //////////////////
+  const logout = () => {
+    localStorage.removeItem("item");
+    setState({ ...state, user: null });
+  };
+
+  ////////////////// check-auth //////////////////
+  const isAuthenticated = Boolean(localStorage.getItem("token"));
+
   return (
-    <AuthContext.Provider value={{ state, login, register }}>
+    <AuthContext.Provider
+      value={{ state, login, logout, register, isAuthenticated }}
+    >
       {children}
     </AuthContext.Provider>
   );
