@@ -15,6 +15,15 @@ authRouter.post("/register", async (req, res) => {
       });
     }
 
+    const userFromPool = `SELECT * FROM users WHERE username = $1`;
+    const result = await pool.query(userFromPool, [username]);
+
+    if (result.rows.length > 0) {
+      return res.status(400).json({
+        error: "Username is already.",
+      });
+    }
+
     const created_at = new Date().toISOString();
 
     await pool.query(
