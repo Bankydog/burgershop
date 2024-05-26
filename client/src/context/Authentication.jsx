@@ -37,7 +37,6 @@ function AuthProvider({ children }) {
 
   ////////////////// login //////////////////
   const login = async (data) => {
-    // Added data parameter
     try {
       const result = await axios.post("http://localhost:4000/auth/login", data);
       const token = result.data.token;
@@ -63,7 +62,7 @@ function AuthProvider({ children }) {
 
   ////////////////// logout //////////////////
   const logout = () => {
-    localStorage.removeItem("item");
+    localStorage.removeItem("token");
     setState({ ...state, user: null });
   };
 
