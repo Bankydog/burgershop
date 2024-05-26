@@ -1,8 +1,10 @@
 import { Router } from "express";
 import { pool } from "../utils/db.js";
+import jwt from "jsonwebtoken";
 
 const authRouter = Router();
 
+////////////////// register //////////////////
 authRouter.post("/register", async (req, res) => {
   try {
     const { username, password, role } = req.body;
@@ -32,6 +34,7 @@ authRouter.post("/register", async (req, res) => {
   }
 });
 
+////////////////// login //////////////////
 authRouter.post("/login", async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -69,9 +72,20 @@ authRouter.post("/login", async (req, res) => {
       });
     }
     ///////////// jwt //////////////////
+    const token = jwt.sign(
+      {
+        id: user.id,
+        username: user.username,
+      },
+      process.env.SECRET_KEY,
+      {
+        expiresIn: "15m",
+      }
+    );
 
     return res.json({
       message: "Login successful!",
+      token,
     });
   } catch (error) {
     console.error("Error during login:", error);
