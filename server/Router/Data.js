@@ -1,7 +1,10 @@
 import { Router } from "express";
 import { pool } from "../utils/db.js";
+import { protect } from "../middlewares/protect.js";
 
 const dataRouter = Router();
+
+dataRouter.use(protect);
 
 dataRouter.get("/", async (req, res) => {
   try {
