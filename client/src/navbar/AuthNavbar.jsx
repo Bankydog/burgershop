@@ -4,8 +4,7 @@ import { useAuth } from "../context/Authentication";
 
 export default function AuthNavbar() {
   const navigate = useNavigate();
-
-  const { logout } = useAuth();
+  const { logout, state } = useAuth();
 
   const handleNavigation = (path) => {
     navigate(path);
@@ -14,7 +13,7 @@ export default function AuthNavbar() {
   return (
     <div className="w-screen h-[50px] flex justify-between bg-red-500">
       <div></div>
-      <div className="border-solid border-4 border-black  mr-3">
+      <div className="flex items-center border-solid border-4 border-black mr-3">
         <ul className="flex space-x-4 p-4">
           <li
             className="cursor-pointer text-white"
@@ -26,6 +25,11 @@ export default function AuthNavbar() {
             Logout
           </li>
         </ul>
+        {state.user && (
+          <span className="text-white ml-4">
+            Welcome, {state.user.username}
+          </span>
+        )}
       </div>
     </div>
   );

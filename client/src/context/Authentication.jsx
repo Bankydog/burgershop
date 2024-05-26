@@ -1,4 +1,4 @@
-import React, { useState, useContext, createContext } from "react";
+import React, { useState, useContext, createContext, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
@@ -11,6 +11,22 @@ function AuthProvider({ children }) {
     error: null,
     user: null,
   });
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const userDataFromToken = jwtDecode(token);
+        setState((prevState) => ({
+          ...prevState,
+          user: userDataFromToken,
+        }));
+      } catch (error) {
+        console.error("Failed to decode token:", error);
+        localStorage.removeItem("token");
+      }
+    }
+  }, []);
 
   const navigate = useNavigate();
 
@@ -43,6 +59,7 @@ function AuthProvider({ children }) {
       localStorage.setItem("token", token);
       const userDataFromToken = jwtDecode(token);
       setState({ ...state, user: userDataFromToken });
+      console.log("State after login:", state);
       alert("Login is successfull");
       navigate("/");
     } catch (error) {
