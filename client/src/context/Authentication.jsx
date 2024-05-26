@@ -49,6 +49,15 @@ function AuthProvider({ children }) {
     } catch (error) {
       console.error("Login failed", error);
       setState({ ...state, error: "Login failed" });
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        alert(`Login failed: ${error.response.data.message}`);
+      } else {
+        alert("Login failed: An unknown error occurred");
+      }
     }
   };
 
