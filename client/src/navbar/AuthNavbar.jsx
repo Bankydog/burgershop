@@ -30,6 +30,9 @@ export default function AuthNavbar() {
             Welcome, {state.user.username}
           </span>
         )}
+        {/* <div className="text-white ml-4">
+          <pre>{JSON.stringify(state, null, 2)}</pre>
+        </div> */}
       </div>
     </div>
   );

@@ -20,4 +20,21 @@ dataRouter.get("/", async (req, res) => {
   }
 });
 
+dataRouter.get("/:id", async (req, res) => {
+  const userId = req.params.id;
+  try {
+    const result = await pool.query("select * from users where user_id=$1", [
+      userId,
+    ]);
+    return res.json({
+      data: result.rows[0].role,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: "Error retrieving data",
+    });
+  }
+});
+
 export default dataRouter;

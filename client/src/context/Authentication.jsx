@@ -30,12 +30,10 @@ function AuthProvider({ children }) {
 
   const navigate = useNavigate();
 
-  ////////////////// register //////////////////
-
   const register = async (data) => {
     try {
       await axios.post("http://localhost:4000/auth/register", data);
-      alert("Register is successfull");
+      alert("Register is successful");
       navigate("/login");
     } catch (error) {
       if (error.response) {
@@ -51,20 +49,18 @@ function AuthProvider({ children }) {
     }
   };
 
-  ////////////////// login //////////////////
   const login = async (data) => {
     try {
       const result = await axios.post("http://localhost:4000/auth/login", data);
       const token = result.data.token;
       localStorage.setItem("token", token);
       const userDataFromToken = jwtDecode(token);
-      setState({ ...state, user: userDataFromToken });
-      console.log("State after login:", state);
-      alert("Login is successfull");
+      setState((prevState) => ({ ...prevState, user: userDataFromToken }));
+      alert("Login is successful");
       navigate("/");
     } catch (error) {
       console.error("Login failed", error);
-      setState({ ...state, error: "Login failed" });
+      setState((prevState) => ({ ...prevState, error: "Login failed" }));
       if (
         error.response &&
         error.response.data &&
@@ -77,18 +73,24 @@ function AuthProvider({ children }) {
     }
   };
 
-  ////////////////// logout //////////////////
   const logout = () => {
     localStorage.removeItem("token");
-    setState({ ...state, user: null });
+    setState((prevState) => ({ ...prevState, user: null }));
   };
 
-  ////////////////// check-auth //////////////////
-  const isAuthenticated = Boolean(localStorage.getItem("token"));
+  const isAuthenticated = Boolean(state.user);
+  const isAdmin = state.user?.role === "admin";
 
   return (
     <AuthContext.Provider
-      value={{ state, login, logout, register, isAuthenticated }}
+      value={{
+        state,
+        login,
+        logout,
+        register,
+        isAuthenticated,
+        isAdmin,
+      }}
     >
       {children}
     </AuthContext.Provider>
