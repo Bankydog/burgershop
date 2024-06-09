@@ -15,7 +15,7 @@ authRouter.post("/register", async (req, res) => {
       });
     }
 
-    const userFromPool = `SELECT * FROM users WHERE username = $1`;
+    const userFromPool = `SELECT * FROM users WHERE LOWER(username) = LOWER($1)`;
     const result = await pool.query(userFromPool, [username]);
 
     if (result.rows.length > 0) {
@@ -57,7 +57,7 @@ authRouter.post("/login", async (req, res) => {
 
     ///////////// check username //////////////////
     const checkUser = await pool.query(
-      `SELECT username, password FROM users WHERE username = $1`,
+      `SELECT user_id, username, password, role FROM users WHERE username = $1`,
       [username]
     );
 
@@ -81,10 +81,14 @@ authRouter.post("/login", async (req, res) => {
       });
     }
     ///////////// jwt //////////////////
+    console.log("User Role:", user.role);
+    console.log("User:", user);
+
     const token = jwt.sign(
       {
-        id: user.id,
+        id: user.user_id,
         username: user.username,
+        role: user.role,
       },
       process.env.SECRET_KEY,
       {
