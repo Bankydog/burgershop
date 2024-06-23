@@ -57,7 +57,7 @@ authRouter.post("/login", async (req, res) => {
 
     ///////////// check username //////////////////
     const checkUser = await pool.query(
-      `SELECT user_id, username, password, role FROM users WHERE username = $1`,
+      `SELECT user_id, username, role FROM users WHERE username = $1`,
       [username]
     );
 
@@ -71,8 +71,8 @@ authRouter.post("/login", async (req, res) => {
 
     ///////////// check password //////////////////
     const checkPassword = await pool.query(
-      `SELECT username FROM users WHERE username = $1 AND password = crypt($2, password)`,
-      [username, password]
+      `SELECT username FROM users WHERE  password = crypt($1, password)`,
+      [password]
     );
 
     if (checkPassword.rows.length === 0) {
