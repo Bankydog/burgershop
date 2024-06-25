@@ -1,5 +1,5 @@
 import { useState } from "react";
-import AddMenuModel from "../components/Modal/AddMenuModel.jsx";
+import AddMenuModel from "../components/modal/AddMenuModel.jsx";
 
 export default function MenuManagement() {
   const [showModal, setShowModal] = useState(false);

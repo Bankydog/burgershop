@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { usePost } from "../../hook/usePostsAPI.jsx";
+import SuccessfulModal from "./SuccessfulModal.jsx";
 
 const AddMenuModel = ({ isVisible, onClose }) => {
   if (!isVisible) {
     return null;
   }
+
+  const [showModal, setShowModal] = useState(false);
 
   const [name, setName] = useState("");
   const [catalog, setCatalog] = useState("");
@@ -31,6 +34,11 @@ const AddMenuModel = ({ isVisible, onClose }) => {
     }
 
     addMenu(formData);
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+    onClose();
   };
 
   return (
@@ -131,11 +139,13 @@ const AddMenuModel = ({ isVisible, onClose }) => {
 
             <button
               type="submit"
+              onClick={() => setShowModal(true)}
               className="mt-4 p-2 bg-blue-500 text-white rounded"
             >
               Add Menu
             </button>
           </div>
+          <SuccessfulModal isVisible={showModal} onClose={handleModalClose} />
         </form>
       </div>
     </div>
