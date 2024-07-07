@@ -70,12 +70,7 @@ adminRouter.get("/", protect, checkAdmin, async (req, res) => {
       return acc;
     }, {});
 
-    const convertDataToArray = Object.entries(groupedData).map(
-      ([catalog, items]) => ({
-        catalog,
-        items,
-      })
-    );
+    const convertDataToArray = Object.values(groupedData);
 
     return res.json({
       data: convertDataToArray,

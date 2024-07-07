@@ -5,11 +5,11 @@ const AdminMenuCard = ({ categories }) => {
   const { getMenu } = usePost();
   const [data, setData] = useState([]);
 
-  const getCategoryClass = (categoryValue) => {
-    switch (categoryValue) {
+  const colorByCat = (value) => {
+    switch (value) {
       case "promotion":
         return "bg-red-500";
-      case "hamburger":
+      case "burger":
         return "bg-yellow-500";
       case "frychicken":
         return "bg-orange-500";
@@ -36,59 +36,47 @@ const AdminMenuCard = ({ categories }) => {
   }, [getMenu]);
 
   return (
-    <div className="w-full flex flex-col justify-center items-center">
-      <h1 className="text-2xl font-bold mb-4">Menu</h1>
-      <div className="w-full max-w-md">
-        <ul>
-          {data.map((item, index) => (
-            <li key={index}>
-              <div>{item.food_name}</div>
-              <div>{item.price}</div>
-              <img
-                src={item.image_url}
-                alt={item.food_name}
-                className="w-[100px] h-[100px]"
-              />
-            </li>
-          ))}
-        </ul>
+    <div className=" h-auto flex flex-col justify-center items-center">
+      <div className="w-full max-w-5xl mt-3">
+        {categories.map((category, index) => (
+          <div key={index} className="mb-8">
+            <h1
+              className={`h-[40px] w-full flex justify-center items-center mt-2 rounded-md text-white text-3xl shadow-md ${colorByCat(
+                category.value
+              )}`}
+            >
+              {category.name}
+            </h1>
+            <ul className="w-[1000px] flex flex-wrap justify-center items-center gap-4">
+              {data
+                .filter((items) => items[0].catalog === category.value)
+                .map((items, idx) =>
+                  items.map((item, index) => (
+                    <li
+                      key={index}
+                      className="flex flex-col items-center p-4 mt-2 bg-white rounded-lg shadow-md"
+                      style={{ maxWidth: "17%", flexBasis: "17%" }}
+                    >
+                      <div className="font-semibold mb-2">{item.food_name}</div>
+                      <div className="mb-2">{item.price}</div>
+                      <img
+                        src={item.image_url}
+                        alt={item.food_name}
+                        className="w-[100px] h-[100px] rounded-lg"
+                      />
+                      <div>{item.description}</div>
+                      <button className="w-[100px] h-[30px] bg-red-500 rounded mt-2 text-lg shadow-md hover:bg-red-700 hover:text-white">
+                        DELETE
+                      </button>
+                    </li>
+                  ))
+                )}
+            </ul>
+          </div>
+        ))}
       </div>
     </div>
   );
 };
 
 export default AdminMenuCard;
-
-{
-  /* <div className="w-full flex flex-col justify-center items-center">
-  <h1 className="text-2xl font-bold mb-4">Menu</h1>
-  <div className="w-full max-w-md">
-    {menu.map((menuItem) => (
-      <div key={menuItem.category} className="mb-4">
-        <h1
-          className={`flex justify-center items-center text-3xl font-bold ${getCategoryClass(
-            menuItem.category
-          )} text-white p-2 rounded`}
-        >
-          {menuItem.category}
-        </h1>
-        <ul className="mt-2">
-          {Array.isArray(menuItem.data) && menuItem.data.length > 0 ? (
-            menuItem.data.map((item) => (
-              <li
-                key={item.name}
-                className="flex justify-between items-center bg-white shadow-md rounded p-2 mb-2"
-              >
-                <span className="font-semibold">{item.name}</span>
-                <span className="font-semibold">{item.price}</span>
-              </li>
-            ))
-          ) : (
-            <li className="text-gray-500">No items available</li>
-          )}
-        </ul>
-      </div>
-    ))}
-  </div>
-</div>; */
-}

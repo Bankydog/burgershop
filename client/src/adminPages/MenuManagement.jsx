@@ -7,7 +7,7 @@ export default function MenuManagement() {
 
   const categories = [
     { name: "Promotion", value: "promotion" },
-    { name: "Hamburger", value: "hamburger" },
+    { name: "Hamburger", value: "burger" },
     { name: "Fry Chicken", value: "frychicken" },
     { name: "Snacks", value: "snacks" },
     { name: "Beverage", value: "beverage" },
@@ -15,10 +15,10 @@ export default function MenuManagement() {
 
   return (
     <>
-      <div className="w-screen h-screen flex flex-col justify-center items-center">
+      <div className="w-screen h-auto flex flex-col justify-center items-center">
         <AdminMenuCard categories={categories} />
         <button
-          className="w-[100px] h-[100px] bg-green-500 rounded hover:bg-slate-400"
+          className="w-[100px] h-[100px] bt-5 bg-green-500 rounded hover:bg-slate-400"
           onClick={() => setShowModal(true)}
         >
           Add Menu
