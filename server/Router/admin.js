@@ -85,7 +85,7 @@ adminRouter.get("/", protect, checkAdmin, async (req, res) => {
 
 ////////////////// get menu by keyword //////////////////
 
-adminRouter.get("/", protect, checkAdmin, async (req, res) => {
+adminRouter.get("/search", protect, checkAdmin, async (req, res) => {
   const keyword = req.query.keyword;
   // console.log(keyword);
 
@@ -99,6 +99,23 @@ adminRouter.get("/", protect, checkAdmin, async (req, res) => {
     });
   } catch (err) {
     console.error("Error getting menu:", err);
+    return res.status(500).json({
+      error: "Internal Server Error",
+    });
+  }
+});
+
+////////////////// delete menu //////////////////
+adminRouter.delete("/:id", protect, checkAdmin, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await pool.query("DELETE FROM catalog WHERE id = $1", [id]);
+    return res.json({
+      message: "deleted successfully",
+    });
+  } catch (err) {
+    console.error("error");
     return res.status(500).json({
       error: "Internal Server Error",
     });

@@ -31,7 +31,7 @@ function PostProvider({ children }) {
   ////////////////// get menu by keyword //////////////////
   const getMenuByKeyword = async (keyword) => {
     try {
-      const response = await axios.get("http://localhost:4000/admin/", {
+      const response = await axios.get("http://localhost:4000/admin/search", {
         params: { keyword },
       });
       return response.data;
