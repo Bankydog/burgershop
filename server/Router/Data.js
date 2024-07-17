@@ -8,7 +8,7 @@ dataRouter.use(protect);
 
 dataRouter.get("/", async (req, res) => {
   try {
-    const result = await pool.query("SELECT * FROM users");
+    const result = await pool.query("SELECT * FROM catalog");
     return res.json({
       data: result.rows,
     });

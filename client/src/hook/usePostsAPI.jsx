@@ -41,8 +41,21 @@ function PostProvider({ children }) {
     }
   };
 
+  ////////////////// delete menu //////////////////
+  const deleteMenu = async (id) => {
+    try {
+      const response = await axios.delete(`http://localhost:4000/admin/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error("Error deleting menu item:", error);
+      throw error;
+    }
+  };
+
   return (
-    <PostContext.Provider value={{ addMenu, getMenu, getMenuByKeyword }}>
+    <PostContext.Provider
+      value={{ addMenu, getMenu, getMenuByKeyword, deleteMenu }}
+    >
       {children}
     </PostContext.Provider>
   );

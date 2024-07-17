@@ -1,39 +1,59 @@
-import React, { useState } from "react";
-import { usePost } from "../../hook/usePostsAPI.jsx";
+import { useState } from "react";
+import { usePost } from "../../hook/usePostsAPI";
 import SuccessfulModal from "./SuccessfulModal.jsx";
+import imageCompression from "browser-image-compression";
 
-const AddMenuModel = ({ isVisible, onClose }) => {
+const AddMenuModel = ({ isVisible, onClose, fetchData }) => {
   if (!isVisible) {
     return null;
   }
 
   const [showModal, setShowModal] = useState(false);
-
   const [name, setName] = useState("");
   const [catalog, setCatalog] = useState("");
   const [price, setPrice] = useState("");
   const [picture, setPicture] = useState(null);
   const [description, setDescription] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
 
-  const handleFileChange = (e) => {
-    setPicture(e.target.files[0]);
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      try {
+        const compressedFile = await imageCompression(file, {
+          maxSizeMB: 1,
+          maxWidthOrHeight: 1024,
+          useWebWorker: true,
+        });
+        setPicture(compressedFile);
+      } catch (error) {
+        console.error("Error compressing file:", error);
+      }
+    }
   };
 
   const { addMenu } = usePost();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsUploading(true);
 
     const formData = new FormData();
     formData.append("name", name);
     formData.append("catalog", catalog);
     formData.append("price", price);
     formData.append("description", description);
-    if (picture) {
-      formData.append("picture", picture);
-    }
+    formData.append("picture", picture);
 
-    addMenu(formData);
+    try {
+      await addMenu(formData);
+      setShowModal(true);
+      fetchData();
+    } catch (error) {
+      console.error("Error adding menu:", error);
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleModalClose = () => {
@@ -46,8 +66,8 @@ const AddMenuModel = ({ isVisible, onClose }) => {
       <div className="w-[600px] flex flex-col">
         <form onSubmit={handleSubmit}>
           <div className="w-full bg-white p-2 rounded flex flex-col justify-center items-center">
-            {/* Close button */}
             <button
+              type="button"
               className="text-black text-xl mr-2 pb-2 self-end"
               onClick={onClose}
             >
@@ -114,7 +134,6 @@ const AddMenuModel = ({ isVisible, onClose }) => {
                 required
               />
             </label>
-
             <label htmlFor="upload">
               Picture
               <input
@@ -136,14 +155,18 @@ const AddMenuModel = ({ isVisible, onClose }) => {
                 />
               </div>
             )}
-
-            <button
-              type="submit"
-              onClick={() => setShowModal(true)}
-              className="mt-4 p-2 bg-blue-500 text-white rounded"
-            >
-              Add Menu
-            </button>
+            {isUploading ? (
+              <button className="mt-4 p-2 bg-pink-500 text-white rounded">
+                Uploading...
+              </button>
+            ) : (
+              <button
+                type="submit"
+                className="mt-4 p-2 bg-blue-500 text-white rounded"
+              >
+                Add Menu
+              </button>
+            )}
           </div>
           <SuccessfulModal isVisible={showModal} onClose={handleModalClose} />
         </form>
