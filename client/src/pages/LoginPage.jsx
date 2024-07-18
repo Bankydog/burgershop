@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Header from "../components/header/Header.jsx";
 import Navbar from "../navbar/navbar.jsx";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/Authentication.jsx";
@@ -20,6 +21,7 @@ export default function LoginPage() {
 
   return (
     <>
+      <Header />
       <Navbar />
       <div className="h-[720px] w-full flex justify-center items-center">
         <div className="h-[300px] w-[550px] flex flex-col justify-end items-center border-4 border-sky-500 p-4">

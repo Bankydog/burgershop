@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { usePost } from "../../hook/usePostsAPI";
 
 const AdminMenuCard = ({ categories, data, fetchData }) => {
   const { deleteMenu } = usePost();
-  const [loadingImages, setLoadingImages] = useState({});
 
   const colorByCat = (value) => {
     switch (value) {
@@ -51,7 +50,6 @@ const AdminMenuCard = ({ categories, data, fetchData }) => {
                     <li
                       key={index}
                       className="flex flex-col items-center p-4 mt-2 bg-white rounded-lg shadow-md"
-                      style={{ maxWidth: "17%", flexBasis: "17%" }}
                     >
                       <div className="font-semibold mb-2">{item.food_name}</div>
                       <div className="mb-2">{item.price}</div>

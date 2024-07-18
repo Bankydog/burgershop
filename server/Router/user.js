@@ -2,11 +2,11 @@ import { Router } from "express";
 import { pool } from "../utils/db.js";
 import { protect } from "../middlewares/protect.js";
 
-const dataRouter = Router();
+const userRouter = Router();
 
-dataRouter.use(protect);
+userRouter.use(protect);
 
-dataRouter.get("/", async (req, res) => {
+userRouter.get("/", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM catalog");
     return res.json({
@@ -20,7 +20,7 @@ dataRouter.get("/", async (req, res) => {
   }
 });
 
-dataRouter.get("/:id", async (req, res) => {
+userRouter.get("/:id", async (req, res) => {
   const userId = req.params.id;
   try {
     const result = await pool.query("select * from users where user_id=$1", [
@@ -37,4 +37,4 @@ dataRouter.get("/:id", async (req, res) => {
   }
 });
 
-export default dataRouter;
+export default userRouter;

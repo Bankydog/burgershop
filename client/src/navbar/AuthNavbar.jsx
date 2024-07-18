@@ -11,7 +11,7 @@ export default function AuthNavbar() {
   };
 
   return (
-    <div className="w-screen h-[50px] flex justify-between bg-red-500">
+    <div className="w-full h-[50px] flex justify-between bg-red-500">
       <div></div>
       <div className="flex items-center border-solid border-4 border-black mr-3">
         <ul className="flex space-x-4 p-4">
