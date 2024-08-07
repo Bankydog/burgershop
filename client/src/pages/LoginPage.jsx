@@ -23,7 +23,7 @@ export default function LoginPage() {
     <>
       <Header />
       <Navbar />
-      <div className="h-[720px] w-full flex justify-center items-center">
+      <div className="h-screen w-full flex justify-center items-center">
         <div className="h-[300px] w-[550px] flex flex-col justify-end items-center border-4 border-sky-500 p-4">
           <h1>Login</h1>
           <form className="mt-4" onSubmit={handleSubmit}>

@@ -29,7 +29,7 @@ export default function RegisterPage() {
     <>
       <Header />
       <Navbar />
-      <div className="h-[720px] w-full flex flex-col justify-center items-center">
+      <div className="h-screen w-full flex flex-col justify-center items-center">
         <h1>Register</h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>

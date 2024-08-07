@@ -8,7 +8,7 @@ export default function ErrorPage() {
     <>
       <Header />
       <Navbar />
-      <div className="h-[500px] w-full flex flex-col justify-center items-center">
+      <div className="h-screen w-full flex flex-col justify-center items-center">
         <div className="text-5xl">Page Not Found</div>
         <button
           onClick={() => navigate("/")}

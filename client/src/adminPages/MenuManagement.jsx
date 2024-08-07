@@ -36,7 +36,7 @@ export default function MenuManagement() {
   return (
     <>
       {isLoading ? (
-        <div className="w-screen h-screen flex justify-center items-center">
+        <div className="h-screen w-full flex justify-center items-center">
           <TailSpin
             visible={true}
             height="80"
@@ -49,7 +49,7 @@ export default function MenuManagement() {
           />
         </div>
       ) : (
-        <div className="w-screen h-auto flex flex-col justify-center items-center">
+        <div className="h-screen w-full flex flex-col justify-center items-center">
           <AdminMenuCard
             categories={categories}
             data={data}
