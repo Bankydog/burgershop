@@ -49,7 +49,7 @@ adminRouter.post(
 adminRouter.get("/", protect, checkAdmin, async (req, res) => {
   try {
     const result = await pool.query(`
-      SELECT id, food_name, price, catalog, description, image_url
+      SELECT catalog_id, food_name, price, catalog, description, image_url
       FROM catalog
       ORDER BY 
         CASE 
@@ -78,7 +78,7 @@ adminRouter.get("/", protect, checkAdmin, async (req, res) => {
   } catch (error) {
     console.error("Error getting menu:", error);
     return res.status(500).json({
-      error: "Internal Server Error",
+      error: "Internal Server Error naja",
     });
   }
 });
@@ -110,7 +110,7 @@ adminRouter.delete("/:id", protect, checkAdmin, async (req, res) => {
   const { id } = req.params;
 
   try {
-    await pool.query("DELETE FROM catalog WHERE id = $1", [id]);
+    await pool.query("DELETE FROM catalog WHERE id = $1 RETURNING id", [id]);
     return res.json({
       message: "deleted successfully",
     });

@@ -105,5 +105,71 @@ userRouter.put("/profile/:id", protect, async (req, res) => {
     });
   }
 });
+////////////////// get data from carts //////////////////
+userRouter.get("/carts/:id", protect, async (req, res) => {
+  const userId = req.params.id;
+  try {
+    // const result = await pool.query(
+    //   `
+    //   SELECT carts.user_id, carts.state, carts.ordered_time,
+    //    cart_items.catalog_id, cart_items.amount
+    //   FROM carts
+    //   JOIN cart_items USING (cart_id)
+    //   WHERE carts.user_id = $1
+    // `,
+    //   [userId]
+    // );
+    const result = await pool.query(`select * from carts where user_id = $1`, [
+      userId,
+    ]);
+
+    res.status(200).json({
+      message: "success",
+      data: result.rows,
+    });
+  } catch (err) {
+    console.error("Error executing query", err.stack);
+    return res.status(500).json({
+      message: "Error retrieving carts",
+    });
+  }
+});
+
+////////////////// post carts with id by user //////////////////
+userRouter.post("/carts/:id", protect, async (req, res) => {
+  const userId = req.params.id;
+  const { total_prices, state, ordered_time, catalog_entries } = req.body;
+
+  try {
+    await pool.query("BEGIN");
+
+    const result = await pool.query(
+      `INSERT INTO carts (total_prices, state, ordered_time, user_id)
+       VALUES ($1, $2, $3, $4) RETURNING user_id`,
+      [total_prices, state, ordered_time, userId]
+    );
+
+    const cartId = result.rows[0].user_id;
+
+    for (const entry of catalog_entries) {
+      const { catalog_id, amount } = entry;
+
+      await pool.query(
+        `INSERT INTO cart_items (cart_id, catalog_id, amount)
+         VALUES ($1, $2, $3)
+         ON CONFLICT (cart_id, catalog_id) 
+         DO UPDATE SET amount = EXCLUDED.amount`,
+        [cartId, catalog_id, amount]
+      );
+    }
+
+    await pool.query("COMMIT");
+    res.status(201).json({ message: "Cart created successfully" });
+  } catch (err) {
+    await pool.query("ROLLBACK");
+    console.error("Error executing query", err.stack);
+    res.status(500).json({ message: "Error creating cart" });
+  }
+});
 
 export default userRouter;

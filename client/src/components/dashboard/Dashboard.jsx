@@ -6,7 +6,7 @@ function Dashboard({ data }) {
 
   return (
     <>
-      <div className="p-6 bg-gray-100 rounded-lg">
+      <div className="p-6 bg-gray-100 rounded-lg flex gap-5">
         {data.map((item, index) => (
           <div
             key={index}

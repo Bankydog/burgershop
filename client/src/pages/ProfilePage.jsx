@@ -53,10 +53,8 @@ function ProfilePage() {
   };
 
   useEffect(() => {
-    if (userId) {
-      fetchData(userId);
-    }
-  }, [userId]);
+    fetchData(userId);
+  }, []);
 
   return (
     <>
