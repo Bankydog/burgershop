@@ -1,8 +1,19 @@
 import AddToCartModal from "../modal/AddToCartModal";
 import { useState } from "react";
 
-function Dashboard({ data }) {
+function Dashboard({ data, onAddToCart }) {
   const [showModal, setShowModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  const handleAddToCartClick = (item) => {
+    setSelectedItem(item);
+    setShowModal(true);
+  };
+
+  const handleAddToCart = (item) => {
+    onAddToCart(item);
+    setShowModal(false);
+  };
 
   return (
     <>
@@ -23,7 +34,7 @@ function Dashboard({ data }) {
             <div className=" font-bold text-[30px]">{item.price} Bath</div>
 
             <button
-              onClick={() => setShowModal(true)}
+              onClick={() => handleAddToCartClick(item)}
               className="w-[140px] h-[50px] bg bg-red-500 rounded-3xl text-white font-bold hover:bg-black hover:text-yellow-300
                active:bg-gray-900 active:text-yellow-400"
             >
@@ -32,6 +43,8 @@ function Dashboard({ data }) {
             <AddToCartModal
               isVisible={showModal}
               onClose={() => setShowModal(false)}
+              item={selectedItem}
+              onAddToCart={handleAddToCart}
             />
           </div>
         ))}

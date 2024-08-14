@@ -2,16 +2,23 @@ import { useState } from "react";
 import { useAuth } from "../../context/Authentication";
 import { Link } from "react-router-dom";
 
-function AddToCartModal({ isVisible, onClose }) {
+function AddToCartModal({ isVisible, onClose, item, onAddToCart }) {
+  const [count, setCount] = useState(0);
+  const { isAuthenticated } = useAuth();
+
   if (!isVisible) {
     return null;
   }
 
-  const [count, setCount] = useState(0);
-  const { isAuthenticated } = useAuth();
-
   const handleCount = (event) => {
     setCount((prevCount) => Math.max(0, prevCount + event));
+  };
+
+  const handleConfirm = () => {
+    if (count > 0) {
+      onAddToCart({ ...item, amount: count });
+      onClose();
+    }
   };
 
   return isAuthenticated ? (
@@ -38,6 +45,7 @@ function AddToCartModal({ isVisible, onClose }) {
         </div>
         <div className="w-[55%] h-[60px] flex justify-between mb-5">
           <button
+            onClick={handleConfirm}
             className="w-[150px] h-[60px] text-3xl bg-green-500 rounded-lg shadow-lg border-solid border-2 border-black
           hover:bg-green-400 hover:text-gray-100 active:bg-green-600 active:border-none focus:ring"
           >

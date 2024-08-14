@@ -3,6 +3,7 @@ import Header from "../components/header/Header.jsx";
 import Navbar from "../navbar/navbar.jsx";
 import Sidebar from "../navbar/Sidebar.jsx";
 import Dashboard from "../components/dashboard/Dashboard.jsx";
+import { useCartItem } from "../hook/cartItem.jsx";
 import { useNonUser } from "../hook/nonUserAPI.jsx";
 import { TailSpin } from "react-loader-spinner";
 
@@ -11,6 +12,7 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState([]);
   const [keyword, setKeyword] = useState("promotion");
+  const { cartItems, handleAddToCart } = useCartItem();
 
   const fetchData = async (keyword) => {
     try {
@@ -51,7 +53,7 @@ export default function HomePage() {
               <Sidebar setKeyword={setKeyword} />
             </div>
             <div className="w-full">
-              <Dashboard data={data} />
+              <Dashboard data={data} onAddToCart={handleAddToCart} />
             </div>
           </div>
         )}
