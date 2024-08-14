@@ -9,7 +9,7 @@ function Dropdown({ state, logout }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="z-10 mr-6">
+    <div className="z-0 mr-6">
       {state.user && (
         <div
           onClick={() => setOpen(!open)}
