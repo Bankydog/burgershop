@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { usePost } from "../../hook/usePostsAPI";
 
 const AdminMenuCard = ({ categories, data, fetchData }) => {
   const { deleteMenu } = usePost();
-  const [loadingImages, setLoadingImages] = useState({});
 
   const colorByCat = (value) => {
     switch (value) {
@@ -22,9 +21,10 @@ const AdminMenuCard = ({ categories, data, fetchData }) => {
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (item) => {
     try {
-      await deleteMenu(id);
+      console.log("Deleting item:", item); // Log the entire item data
+      await deleteMenu(item.catalog_id);
       await fetchData();
     } catch (error) {
       console.error("Error deleting menu item:", error);
@@ -51,7 +51,6 @@ const AdminMenuCard = ({ categories, data, fetchData }) => {
                     <li
                       key={index}
                       className="flex flex-col items-center p-4 mt-2 bg-white rounded-lg shadow-md"
-                      style={{ maxWidth: "17%", flexBasis: "17%" }}
                     >
                       <div className="font-semibold mb-2">{item.food_name}</div>
                       <div className="mb-2">{item.price}</div>
@@ -62,7 +61,7 @@ const AdminMenuCard = ({ categories, data, fetchData }) => {
                       />
                       <div>{item.description}</div>
                       <button
-                        onClick={() => handleDelete(item.id)}
+                        onClick={() => handleDelete(item)}
                         className="w-[100px] h-[30px] bg-red-500 rounded mt-2 text-lg shadow-md hover:bg-red-700 hover:text-white"
                       >
                         DELETE

@@ -1,38 +1,37 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAuth } from "../context/Authentication";
+import { useCartItem } from "../hook/cartItem.jsx";
+import Dropdown from "../components/dropdown/Dropdown.jsx";
 
 export default function AuthNavbar() {
-  const navigate = useNavigate();
   const { logout, state } = useAuth();
-
-  const handleNavigation = (path) => {
-    navigate(path);
-  };
+  const { cartItems, hasItemCart } = useCartItem();
 
   return (
-    <div className="w-screen h-[50px] flex justify-between bg-red-500">
-      <div></div>
-      <div className="flex items-center border-solid border-4 border-black mr-3">
-        <ul className="flex space-x-4 p-4">
-          <li
-            className="cursor-pointer text-white"
-            onClick={() => handleNavigation("/")}
-          >
-            Home
-          </li>
-          <li className="cursor-pointer text-white" onClick={logout}>
-            Logout
-          </li>
-        </ul>
-        {state.user && (
-          <span className="text-white ml-4">
-            Welcome, {state.user.username}
-          </span>
-        )}
-        {/* <div className="text-white ml-4">
-          <pre>{JSON.stringify(state, null, 2)}</pre>
-        </div> */}
+    <div className="w-full h-[50px] flex justify-end text-xl font-semibold bg-red-500">
+      <div className="w-auto flex mt-2">
+        <Link to="/cart">
+          <div className="w-auto flex justify-between cursor-pointer mr-2">
+            <img
+              src="../public/img/cartIcon.png"
+              className="size-10 mr-4 static"
+              alt="cart-icon"
+            />
+            {hasItemCart() ? (
+              <span
+                className="w-[25px] h-[25px] ml-3 flex justify-center items-center text-white absolute bg-rose-600 
+            border-solid border-2 border-white rounded-full drop-shadow-lg"
+              >
+                {cartItems.length}
+              </span>
+            ) : null}
+          </div>
+        </Link>
+        <Link to="/" className="cursor-pointer text-white mr-6">
+          Home
+        </Link>
+
+        <Dropdown state={state} logout={logout} />
       </div>
     </div>
   );

@@ -8,7 +8,7 @@ import { cloudinaryUpload } from "../utils/upload.js";
 const adminRouter = Router();
 const upload = multer({ dest: "uploads/" });
 
-////////////////// add menu //////////////////
+////////////////// post menu //////////////////
 
 adminRouter.post(
   "/addmenu",
@@ -49,7 +49,7 @@ adminRouter.post(
 adminRouter.get("/", protect, checkAdmin, async (req, res) => {
   try {
     const result = await pool.query(`
-      SELECT id, food_name, price, catalog, description, image_url
+      SELECT catalog_id, food_name, price, catalog, description, image_url
       FROM catalog
       ORDER BY 
         CASE 
@@ -78,7 +78,7 @@ adminRouter.get("/", protect, checkAdmin, async (req, res) => {
   } catch (error) {
     console.error("Error getting menu:", error);
     return res.status(500).json({
-      error: "Internal Server Error",
+      error: "Internal Server Error naja",
     });
   }
 });
@@ -105,12 +105,51 @@ adminRouter.get("/search", protect, checkAdmin, async (req, res) => {
   }
 });
 
+////////////////// get order for cookker //////////////////
+adminRouter.get("/cooking", protect, checkAdmin, async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT 
+        p.name, 
+        p.lastname, 
+        c.food_name, 
+        ca.state, 
+        ca.ordered_time, 
+        ca.comment, 
+        ci.amount
+      FROM 
+        profile p
+      JOIN 
+        carts ca ON p.user_id = ca.user_id
+      JOIN 
+        cart_items ci ON ca.cart_id = ci.cart_id
+      JOIN 
+        catalog c ON ci.catalog_id = c.catalog_id
+      WHERE
+         ca.state IN ('waiting', 'cooking');`
+    );
+
+    res.status(200).json({
+      message: "Fetch data complete",
+      data: result.rows,
+    });
+  } catch (err) {
+    console.error("Error getting data:", err);
+    return res.status(500).json({
+      error: "Internal Server Error",
+    });
+  }
+});
+
 ////////////////// delete menu //////////////////
 adminRouter.delete("/:id", protect, checkAdmin, async (req, res) => {
   const { id } = req.params;
 
   try {
-    await pool.query("DELETE FROM catalog WHERE id = $1", [id]);
+    await pool.query(
+      "DELETE FROM catalog WHERE catalog_id = $1 RETURNING catalog_id;",
+      [id]
+    );
     return res.json({
       message: "deleted successfully",
     });

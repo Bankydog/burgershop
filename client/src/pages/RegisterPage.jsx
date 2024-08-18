@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Header from "../components/header/Header.jsx";
 import Navbar from "../navbar/navbar.jsx";
 import { useAuth } from "../context/Authentication.jsx";
 import { useNavigate } from "react-router-dom";
@@ -26,8 +27,9 @@ export default function RegisterPage() {
 
   return (
     <>
+      <Header />
       <Navbar />
-      <div className="h-[720px] w-full flex flex-col justify-center items-center">
+      <div className="h-screen w-full flex flex-col justify-center items-center">
         <h1>Register</h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>

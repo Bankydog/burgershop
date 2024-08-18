@@ -5,6 +5,8 @@ import "./index.css";
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./context/Authentication.jsx";
 import { PostProvider } from "./hook/usePostsAPI.jsx";
+import { NonUserProvider } from "./hook/nonUserAPI.jsx";
+import { CartItemProvider } from "./hook/cartItem.jsx";
 import jwtInterceptors from "./utils/jwtInterceptors.js";
 
 jwtInterceptors();
@@ -12,11 +14,15 @@ jwtInterceptors();
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
-      <AuthProvider>
-        <PostProvider>
-          <App />
-        </PostProvider>
-      </AuthProvider>
+      <CartItemProvider>
+        <AuthProvider>
+          <PostProvider>
+            <NonUserProvider>
+              <App />
+            </NonUserProvider>
+          </PostProvider>
+        </AuthProvider>
+      </CartItemProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

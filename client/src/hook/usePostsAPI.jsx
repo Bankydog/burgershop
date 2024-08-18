@@ -1,9 +1,13 @@
-import { useState, useContext, createContext } from "react";
+import { useContext, createContext, useState, useEffect } from "react";
 import axios from "axios";
 
 const PostContext = createContext();
 
 function PostProvider({ children }) {
+  const [state, setState] = useState({
+    dataProfile: [],
+  });
+
   ////////////////// add menu //////////////////
   const addMenu = async (data) => {
     try {
@@ -12,6 +16,7 @@ function PostProvider({ children }) {
       });
     } catch (error) {
       console.error("Error adding menu:", error);
+      throw error;
     }
   };
 
@@ -20,7 +25,7 @@ function PostProvider({ children }) {
   const getMenu = async () => {
     try {
       const response = await axios.get("http://localhost:4000/admin/");
-      // console.log(response.data.data);
+      console.log(response.data.data);
       return response.data.data;
     } catch (error) {
       console.error("Error fetching menu:", error);
@@ -41,6 +46,60 @@ function PostProvider({ children }) {
     }
   };
 
+  ////////////////// get profile //////////////////
+  const getProfile = async (id) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/posts/profile/${id}`
+      );
+      // console.log("Profile fetched successfully:", response.data);
+      setState((prevState) => ({
+        ...prevState,
+        dataProfile: response.data || [],
+      }));
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+      setState((prevState) => ({ ...prevState, dataProfile: [] }));
+    }
+  };
+
+  ////////////////// post profile //////////////////
+  const postProfile = async (data, id) => {
+    try {
+      const response = await axios.post(
+        `http://localhost:4000/posts/profile/${id}`,
+        data,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      console.log("Profile created successfully");
+      return response.data;
+    } catch (error) {
+      console.error("Error creating profile:", error);
+      throw error;
+    }
+  };
+
+  ////////////////// put profile //////////////////
+  const putProfile = async (data, id) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:4000/posts/profile/${id}`,
+        data,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      console.log("Profile updated successfully:", response.data);
+      return response.data;
+    } catch (error) {
+      console.log("Error updating profile:", error);
+      throw error;
+    }
+  };
+
   ////////////////// delete menu //////////////////
   const deleteMenu = async (id) => {
     try {
@@ -52,9 +111,40 @@ function PostProvider({ children }) {
     }
   };
 
+  ////////////////// post cart items //////////////////
+  const postCartItems = async (id, cartData) => {
+    try {
+      const response = await axios.post(
+        `http://localhost:4000/posts/carts/${id}`,
+        cartData,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error posting cart items:", error);
+      throw error;
+    }
+  };
+
+  ////////////////// has data profile? //////////////////
+  const hasDataProfile = state.dataProfile.length !== 0;
+  // console.log("yes", hasDataProfile);
+
   return (
     <PostContext.Provider
-      value={{ addMenu, getMenu, getMenuByKeyword, deleteMenu }}
+      value={{
+        addMenu,
+        getMenu,
+        getMenuByKeyword,
+        getProfile,
+        postProfile,
+        putProfile,
+        deleteMenu,
+        postCartItems,
+        hasDataProfile,
+      }}
     >
       {children}
     </PostContext.Provider>

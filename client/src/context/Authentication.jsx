@@ -80,6 +80,7 @@ function AuthProvider({ children }) {
 
   const isAuthenticated = Boolean(state.user);
   const isAdmin = state.user?.role === "admin";
+  const userId = state.user ? state.user.id : null;
 
   return (
     <AuthContext.Provider
@@ -90,6 +91,7 @@ function AuthProvider({ children }) {
         register,
         isAuthenticated,
         isAdmin,
+        userId,
       }}
     >
       {children}

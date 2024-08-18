@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { usePost } from "../../hook/usePostsAPI";
+import { usePost } from "../../hook/usePostsAPI.jsx";
 import SuccessfulModal from "./SuccessfulModal.jsx";
 import imageCompression from "browser-image-compression";
 
