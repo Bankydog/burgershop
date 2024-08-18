@@ -111,6 +111,23 @@ function PostProvider({ children }) {
     }
   };
 
+  ////////////////// post cart items //////////////////
+  const postCartItems = async (id, cartData) => {
+    try {
+      const response = await axios.post(
+        `http://localhost:4000/posts/carts/${id}`,
+        cartData,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error posting cart items:", error);
+      throw error;
+    }
+  };
+
   ////////////////// has data profile? //////////////////
   const hasDataProfile = state.dataProfile.length !== 0;
   // console.log("yes", hasDataProfile);
@@ -125,6 +142,7 @@ function PostProvider({ children }) {
         postProfile,
         putProfile,
         deleteMenu,
+        postCartItems,
         hasDataProfile,
       }}
     >

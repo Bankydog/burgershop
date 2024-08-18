@@ -6,20 +6,27 @@ function CartItemProvider({ children }) {
   ////////////////// set cart items //////////////////
   const [cartItems, setCartItems] = useState([]);
 
-  const handleAddToCart = (item) => {
+  const handleAddToCart = (newItem) => {
     setCartItems((prevItems) => {
-      const updatedCartItems = [...prevItems, item];
-      console.log("Updated Cart Items:", updatedCartItems);
-      return updatedCartItems;
+      const itemIndex = prevItems.findIndex(
+        (item) => item.catalog_id === newItem.catalog_id
+      );
+      if (itemIndex !== -1) {
+        const updatedItems = [...prevItems];
+        updatedItems[itemIndex].amount += newItem.amount;
+        return updatedItems;
+      } else {
+        return [...prevItems, newItem];
+      }
     });
   };
 
   ////////////////// check items of length //////////////////
-  const checkLength = () => cartItems.length !== 0;
+  const hasItemCart = () => cartItems.length !== 0;
 
   return (
     <CartItemContext.Provider
-      value={{ cartItems, setCartItems, handleAddToCart, checkLength }}
+      value={{ cartItems, setCartItems, handleAddToCart, hasItemCart }}
     >
       {children}
     </CartItemContext.Provider>

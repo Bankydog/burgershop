@@ -21,9 +21,10 @@ const AdminMenuCard = ({ categories, data, fetchData }) => {
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (item) => {
     try {
-      await deleteMenu(id);
+      console.log("Deleting item:", item); // Log the entire item data
+      await deleteMenu(item.catalog_id);
       await fetchData();
     } catch (error) {
       console.error("Error deleting menu item:", error);
@@ -60,7 +61,7 @@ const AdminMenuCard = ({ categories, data, fetchData }) => {
                       />
                       <div>{item.description}</div>
                       <button
-                        onClick={() => handleDelete(item.id)}
+                        onClick={() => handleDelete(item)}
                         className="w-[100px] h-[30px] bg-red-500 rounded mt-2 text-lg shadow-md hover:bg-red-700 hover:text-white"
                       >
                         DELETE

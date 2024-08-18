@@ -5,7 +5,7 @@ import Dropdown from "../components/dropdown/Dropdown.jsx";
 
 export default function AuthNavbar() {
   const { logout, state } = useAuth();
-  const { cartItems, checkLength } = useCartItem();
+  const { cartItems, hasItemCart } = useCartItem();
 
   return (
     <div className="w-full h-[50px] flex justify-end text-xl font-semibold bg-red-500">
@@ -17,7 +17,7 @@ export default function AuthNavbar() {
               className="size-10 mr-4 static"
               alt="cart-icon"
             />
-            {checkLength() ? (
+            {hasItemCart() ? (
               <span
                 className="w-[25px] h-[25px] ml-3 flex justify-center items-center text-white absolute bg-rose-600 
             border-solid border-2 border-white rounded-full drop-shadow-lg"

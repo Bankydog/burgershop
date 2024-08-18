@@ -49,7 +49,7 @@ export default function MenuManagement() {
           />
         </div>
       ) : (
-        <div className="h-screen w-full flex flex-col justify-center items-center">
+        <div className="h-auto w-full flex flex-col justify-center items-center">
           <AdminMenuCard
             categories={categories}
             data={data}

@@ -3,7 +3,7 @@ import { useAuth } from "../../context/Authentication";
 import { Link } from "react-router-dom";
 
 function AddToCartModal({ isVisible, onClose, item, onAddToCart }) {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(1);
   const { isAuthenticated } = useAuth();
 
   if (!isVisible) {
@@ -11,12 +11,13 @@ function AddToCartModal({ isVisible, onClose, item, onAddToCart }) {
   }
 
   const handleCount = (event) => {
-    setCount((prevCount) => Math.max(0, prevCount + event));
+    setCount((prevCount) => Math.max(1, prevCount + event));
   };
 
   const handleConfirm = () => {
     if (count > 0) {
       onAddToCart({ ...item, amount: count });
+      setCount(1);
       onClose();
     }
   };

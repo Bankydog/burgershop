@@ -138,23 +138,25 @@ userRouter.get("/carts/:id", protect, async (req, res) => {
 ////////////////// post carts with id by user //////////////////
 userRouter.post("/carts/:id", protect, async (req, res) => {
   const userId = req.params.id;
+  const { total_prices, cartItems, comment } = req.body;
+  const state = "oredered";
   const ordered_time = new Date()
     .toLocaleString("en-GB", { timeZone: "Asia/Bangkok" })
-    .replace(",", "");
-  const { total_prices, state, catalog_entries, comment } = req.body;
+    .replace(",", "")
+    .replace(/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/, "$3-$2-$1"); // Change format to YYYY-MM-DD
 
   try {
     await pool.query("BEGIN");
 
     const result = await pool.query(
-      `INSERT INTO carts (total_prices, state, ordered_time, user_id)
+      `INSERT INTO carts (total_prices, state, ordered_time, user_id, comment)
        VALUES ($1, $2, $3, $4, $5) RETURNING user_id, comment`,
       [total_prices, state, ordered_time, userId, comment]
     );
 
-    const cartId = result.rows[0].user_id;
+    const cartId = result.rows[0].cart_id;
 
-    for (const entry of catalog_entries) {
+    for (const entry of cartItems) {
       const { catalog_id, amount } = entry;
 
       await pool.query(

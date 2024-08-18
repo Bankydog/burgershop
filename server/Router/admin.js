@@ -146,7 +146,10 @@ adminRouter.delete("/:id", protect, checkAdmin, async (req, res) => {
   const { id } = req.params;
 
   try {
-    await pool.query("DELETE FROM catalog WHERE id = $1", [id]);
+    await pool.query(
+      "DELETE FROM catalog WHERE catalog_id = $1 RETURNING catalog_id;",
+      [id]
+    );
     return res.json({
       message: "deleted successfully",
     });

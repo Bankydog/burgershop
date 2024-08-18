@@ -5,6 +5,7 @@ function Dropdown({ state, logout }) {
   const items = [
     { label: "Cart", action: "/cart" },
     { label: "Profile", action: "/profile" },
+    { label: "Status", action: "/status" },
   ];
   const [open, setOpen] = useState(false);
 
