@@ -150,11 +150,13 @@ userRouter.post("/carts/:id", protect, async (req, res) => {
 
     const result = await pool.query(
       `INSERT INTO carts (total_prices, state, ordered_time, user_id, comment)
-       VALUES ($1, $2, $3, $4, $5) RETURNING user_id, comment`,
+       VALUES ($1, $2, $3, $4, $5) 
+       RETURNING cart_id, user_id, comment`,
       [total_prices, state, ordered_time, userId, comment]
     );
 
     const cartId = result.rows[0].cart_id;
+    // console.log("cart_id : ", cartId);
 
     for (const entry of cartItems) {
       const { catalog_id, amount } = entry;
