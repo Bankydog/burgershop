@@ -139,32 +139,44 @@ userRouter.get("/carts/:id", protect, async (req, res) => {
 userRouter.post("/carts/:id", protect, async (req, res) => {
   const userId = req.params.id;
   const { total_prices, cartItems, comment } = req.body;
-  const state = "oredered";
+  const state = "ordered";
   const ordered_time = new Date()
     .toLocaleString("en-GB", { timeZone: "Asia/Bangkok" })
     .replace(",", "")
-    .replace(/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/, "$3-$2-$1"); // Change format to YYYY-MM-DD
-
+    .replace(/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/, "$3-$2-$1");
   try {
     await pool.query("BEGIN");
+    let newOrderNo;
+    const orderNoResult = await pool.query(
+      "SELECT order_no FROM carts ORDER BY cart_id DESC LIMIT 1"
+    );
 
+    if (orderNoResult.rows.length === 0) {
+      newOrderNo = "001";
+    } else {
+      const orderNoFormTable = parseInt(orderNoResult.rows[0].order_no, 10);
+      if (orderNoFormTable >= 999) {
+        newOrderNo = "001";
+      } else {
+        newOrderNo = (orderNoFormTable + 1).toString().padStart(3, "0");
+      }
+    }
+    // console.log(newOrderNo);
     const result = await pool.query(
-      `INSERT INTO carts (total_prices, state, ordered_time, user_id, comment)
-       VALUES ($1, $2, $3, $4, $5) 
+      `INSERT INTO carts (total_prices, state, ordered_time, user_id, comment, order_no)
+       VALUES ($1, $2, $3, $4, $5, $6)
        RETURNING cart_id, user_id, comment`,
-      [total_prices, state, ordered_time, userId, comment]
+      [total_prices, state, ordered_time, userId, comment, newOrderNo]
     );
 
     const cartId = result.rows[0].cart_id;
-    // console.log("cart_id : ", cartId);
-
     for (const entry of cartItems) {
       const { catalog_id, amount } = entry;
 
       await pool.query(
         `INSERT INTO cart_items (cart_id, catalog_id, amount)
          VALUES ($1, $2, $3)
-         ON CONFLICT (cart_id, catalog_id) 
+         ON CONFLICT (cart_id, catalog_id)
          DO UPDATE SET amount = EXCLUDED.amount`,
         [cartId, catalog_id, amount]
       );

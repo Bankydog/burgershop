@@ -14,6 +14,7 @@ const CartPage = () => {
   const { getProfile, postCartItems } = usePost();
   const { userId } = useAuth();
   const [comment, setComment] = useState("");
+  const [isUpload, setIsUpload] = useState(false);
 
   const fetchProfile = async () => {
     try {
@@ -67,7 +68,8 @@ const CartPage = () => {
     setComment(e.target.value);
   };
 
-  const handleSaveComment = async () => {
+  const handleSubmit = async () => {
+    setIsUpload(true);
     const cartData = {
       cartItems,
       comment,
@@ -76,8 +78,11 @@ const CartPage = () => {
     console.log(cartData);
     try {
       await postCartItems(userId, cartData);
+      setCartItems([]);
     } catch (error) {
       console.error("Failed to send data:", error);
+    } finally {
+      setIsUpload(false);
     }
   };
 
@@ -201,19 +206,28 @@ const CartPage = () => {
                     value={comment}
                     onChange={handleCommentChange}
                   />
-                  <button
-                    className={`mt-2 px-4 py-2 ${
-                      profileData?.address ? "bg-blue-500" : "bg-gray-500"
-                    } text-white font-semibold rounded-lg shadow-md
+                  {isUpload ? (
+                    <button
+                      className={`mt-2 px-4 py-2 bg-pink-500 text-white font-semibold rounded-lg shadow-md
+                    `}
+                    >
+                      Uploading...
+                    </button>
+                  ) : (
+                    <button
+                      className={`mt-2 px-4 py-2 ${
+                        profileData?.address ? "bg-blue-500" : "bg-gray-500"
+                      } text-white font-semibold rounded-lg shadow-md
                     hover:${
                       profileData?.address ? "bg-blue-600" : "bg-gray-600"
                     }
                     focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                    onClick={handleSaveComment}
-                    disabled={!profileData?.address}
-                  >
-                    Confirm
-                  </button>
+                      onClick={handleSubmit}
+                      disabled={!profileData?.address}
+                    >
+                      Confirm
+                    </button>
+                  )}
                   {profileData?.address ? null : (
                     <span className="font-extrabold text-2xl ml-5">
                       <Link to="/profile" className="text-blue-500 underline">
