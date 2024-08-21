@@ -105,23 +105,21 @@ userRouter.put("/profile/:id", protect, async (req, res) => {
     });
   }
 });
-////////////////// get data from carts //////////////////
+////////////////// user get data from carts&cart_items by ID //////////////////
 userRouter.get("/carts/:id", protect, async (req, res) => {
   const userId = req.params.id;
   try {
-    // const result = await pool.query(
-    //   `
-    //   SELECT carts.user_id, carts.state, carts.ordered_time,
-    //    cart_items.catalog_id, cart_items.amount
-    //   FROM carts
-    //   JOIN cart_items USING (cart_id)
-    //   WHERE carts.user_id = $1
-    // `,
-    //   [userId]
-    // );
-    const result = await pool.query(`select * from carts where user_id = $1`, [
-      userId,
-    ]);
+    const result = await pool.query(
+      `SELECT 
+    carts.order_no, carts.state, carts.total_prices, carts.ordered_time, catalog.food_name, cart_items.amount
+      FROM carts
+      JOIN cart_items ON carts.cart_id = cart_items.cart_id
+      JOIN catalog ON cart_items.catalog_id = catalog.catalog_id
+      WHERE carts.user_id = $1
+      AND carts.state != 'finished'
+    `,
+      [userId]
+    );
 
     res.status(200).json({
       message: "success",

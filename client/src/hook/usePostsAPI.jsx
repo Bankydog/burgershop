@@ -64,6 +64,19 @@ function PostProvider({ children }) {
     }
   };
 
+  ////////////////// user get data from carts&cart_items by ID //////////////////
+  const getPurchaseOrder = async (id) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/posts/carts/${id}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching Purchase Order:", error);
+      return { error: "Failed to fetch purchase order data" };
+    }
+  };
+
   ////////////////// post profile //////////////////
   const postProfile = async (data, id) => {
     try {
@@ -143,6 +156,7 @@ function PostProvider({ children }) {
         putProfile,
         deleteMenu,
         postCartItems,
+        getPurchaseOrder,
         hasDataProfile,
       }}
     >
