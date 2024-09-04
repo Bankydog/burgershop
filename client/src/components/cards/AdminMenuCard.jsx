@@ -23,7 +23,7 @@ const AdminMenuCard = ({ categories, data, fetchData }) => {
 
   const handleDelete = async (item) => {
     try {
-      console.log("Deleting item:", item); // Log the entire item data
+      // console.log("Deleting item:", item); // Log the entire item data
       await deleteMenu(item.catalog_id);
       await fetchData();
     } catch (error) {
@@ -32,7 +32,7 @@ const AdminMenuCard = ({ categories, data, fetchData }) => {
   };
 
   return (
-    <div className="h-auto flex flex-col justify-center items-center">
+    <div className="flex flex-col items-center justify-center h-auto">
       <div className="w-full max-w-5xl mt-3">
         {categories.map((category, index) => (
           <div key={index} className="mb-8">
@@ -52,7 +52,7 @@ const AdminMenuCard = ({ categories, data, fetchData }) => {
                       key={index}
                       className="flex flex-col items-center p-4 mt-2 bg-white rounded-lg shadow-md"
                     >
-                      <div className="font-semibold mb-2">{item.food_name}</div>
+                      <div className="mb-2 font-semibold">{item.food_name}</div>
                       <div className="mb-2">{item.price}</div>
                       <img
                         src={item.image_url}

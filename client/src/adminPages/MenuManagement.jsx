@@ -3,6 +3,7 @@ import { usePost } from "../hook/usePostsAPI.jsx";
 import AddMenuModel from "../components/modal/AddMenuModel.jsx";
 import AdminMenuCard from "../components/cards/AdminMenuCard.jsx";
 import { TailSpin } from "react-loader-spinner";
+import AdminNavbar from "../navbar/AdminNavbar.jsx";
 
 export default function MenuManagement() {
   const [showModal, setShowModal] = useState(false);
@@ -36,7 +37,7 @@ export default function MenuManagement() {
   return (
     <>
       {isLoading ? (
-        <div className="h-screen w-full flex justify-center items-center">
+        <div className="flex items-center justify-center w-full h-screen">
           <TailSpin
             visible={true}
             height="80"
@@ -49,19 +50,21 @@ export default function MenuManagement() {
           />
         </div>
       ) : (
-        <div className="h-auto w-full flex flex-col justify-center items-center">
+        <div className="flex flex-col items-center justify-center w-full h-auto">
+          <AdminNavbar />
+          <button
+            className="w-[100px] h-[100px] text-white font-medium mt-5 bg-green-500 rounded hover:bg-slate-400"
+            onClick={() => setShowModal(true)}
+          >
+            Add Menu
+          </button>
           <AdminMenuCard
             categories={categories}
             data={data}
             fetchData={fetchData}
             isLoading={isLoading}
           />
-          <button
-            className="w-[100px] h-[100px] mt-5 bg-green-500 rounded hover:bg-slate-400"
-            onClick={() => setShowModal(true)}
-          >
-            Add Menu
-          </button>
+
           <AddMenuModel
             isVisible={showModal}
             onClose={() => setShowModal(false)}

@@ -29,7 +29,8 @@ const CartPage = () => {
 
   useEffect(() => {
     fetchProfile();
-  }, [userId]);
+  }),
+    [userId];
 
   useEffect(() => {
     console.log("Cart Items:", cartItems);
@@ -220,10 +221,12 @@ const CartPage = () => {
                           ? "bg-blue-500"
                           : "bg-gray-500"
                       } text-white font-semibold rounded-lg shadow-md
-  hover:${
-    profileData?.address && cartItems.length > 0 ? "bg-blue-600" : "bg-gray-600"
-  }
-  focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                      hover:${
+                        profileData?.address && cartItems.length > 0
+                          ? "bg-blue-600"
+                          : "bg-gray-600"
+                      }
+                        focus:outline-none focus:ring-2 focus:ring-blue-500`}
                       onClick={handleSubmit}
                       disabled={!profileData?.address || cartItems.length === 0}
                     >

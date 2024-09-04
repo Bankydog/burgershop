@@ -107,7 +107,7 @@ adminRouter.get("/search", protect, checkAdmin, async (req, res) => {
 
 ////////////////// get order for cookker //////////////////
 adminRouter.get("/cooking", protect, checkAdmin, async (req, res) => {
-  const { state, page = 1 } = req.query;
+  const { state, page } = req.query;
   const limit = 10;
   const offset = (page - 1) * limit;
 

@@ -141,6 +141,19 @@ function PostProvider({ children }) {
     }
   };
 
+  ////////////////// admin get ordered //////////////////
+  const getOrdered = async (page, states) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/admin/cooking?page=${page}&states=${states}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching ordered data:", error.message);
+      throw error;
+    }
+  };
+
   ////////////////// has data profile? //////////////////
   const hasDataProfile = state.dataProfile.length !== 0;
   // console.log("yes", hasDataProfile);
@@ -158,6 +171,7 @@ function PostProvider({ children }) {
         postCartItems,
         getPurchaseOrder,
         hasDataProfile,
+        getOrdered,
       }}
     >
       {children}
