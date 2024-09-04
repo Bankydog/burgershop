@@ -90,9 +90,9 @@ const CartPage = () => {
     <>
       <Header />
       <Navbar />
-      <div className="h-screen w-full flex flex-col bg-gray-100">
+      <div className="flex flex-col w-full h-screen bg-gray-100">
         {isLoading ? (
-          <div className="flex-grow flex justify-center items-center">
+          <div className="flex items-center justify-center flex-grow">
             <TailSpin
               visible={true}
               height="80"
@@ -105,7 +105,7 @@ const CartPage = () => {
             />
           </div>
         ) : (
-          <div className="flex-grow flex">
+          <div className="flex flex-grow">
             <div className="flex-1 p-6 overflow-y-auto">
               {cartItems.length === 0 ? (
                 <div className="flex flex-col items-center h-full">
@@ -114,7 +114,7 @@ const CartPage = () => {
                     className="w-[500px] h-auto"
                     alt="No items in cart"
                   />
-                  <p className="text-xl mt-4 text-gray-600">
+                  <p className="mt-4 text-xl text-gray-600">
                     Your cart is empty
                   </p>
                 </div>
@@ -123,18 +123,18 @@ const CartPage = () => {
                   {cartItems.map((item) => (
                     <div
                       key={`${item.catalog_id}-${item.amount}`}
-                      className="flex items-center p-4 bg-white rounded-lg shadow-md border border-gray-200"
+                      className="flex items-center p-4 bg-white border border-gray-200 rounded-lg shadow-md"
                     >
                       <img
                         src={item.image_url}
                         alt={item.food_name}
-                        className="w-24 h-24 object-cover rounded"
+                        className="object-cover w-24 h-24 rounded"
                       />
                       <div className="flex-1 mx-4">
                         <div className="text-lg font-semibold text-gray-800">
                           {item.food_name}
                         </div>
-                        <div className="text-md text-gray-600">
+                        <div className="text-gray-600 text-md">
                           Price: {item.price} Bath
                         </div>
                       </div>
@@ -166,15 +166,15 @@ const CartPage = () => {
                 </div>
               )}
             </div>
-            <div className="w-1/3 p-6 bg-white rounded-lg shadow-md border border-gray-200">
-              <div className="text-2xl font-semibold mb-4 text-gray-800">
+            <div className="w-1/3 p-6 bg-white border border-gray-200 rounded-lg shadow-md">
+              <div className="mb-4 text-2xl font-semibold text-gray-800">
                 Order Summary
               </div>
-              <div className="text-md mb-4">
+              <div className="mb-4 text-md">
                 <div className="flex flex-col mb-2 space-y-3">
                   <span className="font-semibold">
                     Total Price :{" "}
-                    <span className="font-extrabold text-2xl text-green-500">
+                    <span className="text-2xl font-extrabold text-green-500">
                       {total_prices} Bath
                     </span>
                   </span>
@@ -183,11 +183,11 @@ const CartPage = () => {
                     Shipping address :{" "}
                     <span>
                       {profileData?.address ? (
-                        <span className="font-extrabold text-2xl text-green-500">
+                        <span className="text-2xl font-extrabold text-green-500">
                           {profileData.address}
                         </span>
                       ) : (
-                        <span className="font-extrabold text-2xl text-red-500">
+                        <span className="text-2xl font-extrabold text-red-500">
                           Address not available
                         </span>
                       )}
@@ -201,7 +201,7 @@ const CartPage = () => {
                   <textarea
                     id="order-comment"
                     rows="4"
-                    className="w-full mt-2 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Enter your comments here..."
                     value={comment}
                     onChange={handleCommentChange}
@@ -216,20 +216,22 @@ const CartPage = () => {
                   ) : (
                     <button
                       className={`mt-2 px-4 py-2 ${
-                        profileData?.address ? "bg-blue-500" : "bg-gray-500"
+                        profileData?.address && cartItems.length > 0
+                          ? "bg-blue-500"
+                          : "bg-gray-500"
                       } text-white font-semibold rounded-lg shadow-md
-                    hover:${
-                      profileData?.address ? "bg-blue-600" : "bg-gray-600"
-                    }
-                    focus:outline-none focus:ring-2 focus:ring-blue-500`}
+  hover:${
+    profileData?.address && cartItems.length > 0 ? "bg-blue-600" : "bg-gray-600"
+  }
+  focus:outline-none focus:ring-2 focus:ring-blue-500`}
                       onClick={handleSubmit}
-                      disabled={!profileData?.address}
+                      disabled={!profileData?.address || cartItems.length === 0}
                     >
                       Confirm
                     </button>
                   )}
                   {profileData?.address ? null : (
-                    <span className="font-extrabold text-2xl ml-5">
+                    <span className="ml-5 text-2xl font-extrabold">
                       <Link to="/profile" className="text-blue-500 underline">
                         Add your address here
                       </Link>

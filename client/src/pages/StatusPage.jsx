@@ -10,48 +10,27 @@ const StatusPage = () => {
   const [orderData, setOrderData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [expandedOrders, setExpandedOrders] = useState({}); // To track which orders are expanded
+  const [expandedOrders, setExpandedOrders] = useState({});
 
-  const groupByOrderNo = (data) => {
-    return Object.values(
-      data.reduce((acc, item) => {
-        if (!acc[item.order_no]) {
-          acc[item.order_no] = {
-            order_no: item.order_no,
-            ordered_time: item.ordered_time,
-            state: item.state,
-            total_prices: item.total_prices,
-            items: [],
-          };
-        }
-        acc[item.order_no].items.push({
-          food_name: item.food_name,
-          amount: item.amount,
-        });
-        return acc;
-      }, {})
-    );
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/posts/carts/${userId}`
+      );
+      const data = response.data.data;
+      setOrderData(data);
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setError("Error fetching data");
+      setIsLoading(false);
+    }
   };
-
   useEffect(() => {
-    const fetchDataAndGroup = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:4000/posts/carts/${userId}`
-        );
-        const data = response.data.data; // Assuming your API returns data in this format
-        const groupedData = groupByOrderNo(data);
-        setOrderData(groupedData);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setError("Error fetching data");
-        setIsLoading(false);
-      }
-    };
-
-    fetchDataAndGroup();
+    fetchData();
   }, [userId]);
+
+  console.log("group data is :", orderData);
 
   const handleSeeMore = (order_no) => {
     setExpandedOrders((prev) => ({

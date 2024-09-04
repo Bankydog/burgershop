@@ -107,31 +107,121 @@ adminRouter.get("/search", protect, checkAdmin, async (req, res) => {
 
 ////////////////// get order for cookker //////////////////
 adminRouter.get("/cooking", protect, checkAdmin, async (req, res) => {
+  const { state, page = 1 } = req.query;
+  const limit = 10;
+  const offset = (page - 1) * limit;
+
   try {
+    const states = state ? state.split(",") : ["ordered", "cooking"];
     const result = await pool.query(
       `SELECT 
-        p.name, 
-        p.lastname, 
+        ca.order_no, 
         c.food_name, 
         ca.state, 
         ca.ordered_time, 
         ca.comment, 
+        ca.total_prices, 
         ci.amount
       FROM 
-        profile p
-      JOIN 
-        carts ca ON p.user_id = ca.user_id
+        carts ca
       JOIN 
         cart_items ci ON ca.cart_id = ci.cart_id
       JOIN 
         catalog c ON ci.catalog_id = c.catalog_id
       WHERE
-         ca.state IN ('waiting', 'cooking');`
+        ca.state = ANY($1)
+      LIMIT $2 OFFSET $3;`,
+      [states, limit, offset]
     );
 
+    const groupedData = result.rows.reduce((acc, item) => {
+      if (!acc[item.order_no]) {
+        acc[item.order_no] = {
+          order_no: item.order_no,
+          ordered_time: item.ordered_time,
+          state: item.state,
+          total_prices: item.total_prices,
+          items: [],
+        };
+      }
+      acc[item.order_no].items.push({
+        food_name: item.food_name,
+        amount: item.amount,
+      });
+      return acc;
+    }, {});
+
+    const groupedArray = Object.values(groupedData);
+
     res.status(200).json({
-      message: "Fetch data complete",
-      data: result.rows,
+      message: "success",
+      data: groupedArray,
+      page: Number(page),
+      limit: limit,
+    });
+  } catch (err) {
+    console.error("Error getting data:", err);
+    return res.status(500).json({
+      error: "Internal Server Error",
+    });
+  }
+});
+
+////////////////// get ordered for rider //////////////////
+adminRouter.get("/riding", protect, checkAdmin, async (req, res) => {
+  const { state, page = 1 } = req.query;
+  const limit = 10;
+  const offset = (page - 1) * limit;
+
+  try {
+    const states = state ? state.split(",") : ["cooked", "riding", "rided"];
+
+    const result = await pool.query(
+      `SELECT 
+        ca.order_no, 
+        ca.state, 
+        ca.cooked_time, 
+        ca.comment, 
+        ca.total_prices, 
+        ci.amount, 
+        c.food_name
+      FROM 
+        carts ca
+      JOIN 
+        cart_items ci ON ca.cart_id = ci.cart_id
+      JOIN 
+        catalog c ON ci.catalog_id = c.catalog_id
+      WHERE
+        ca.state = ANY($1)
+      LIMIT $2 OFFSET $3;`,
+      [states, limit, offset]
+    );
+
+    const groupedData = result.rows.reduce((acc, item) => {
+      if (!acc[item.order_no]) {
+        acc[item.order_no] = {
+          order_no: item.order_no,
+          cooked_time: item.cooked_time,
+          state: item.state,
+          total_prices: item.total_prices,
+          comment: item.comment,
+          items: [],
+        };
+      }
+      acc[item.order_no].items.push({
+        food_name: item.food_name,
+        amount: item.amount,
+      });
+      return acc;
+    }, {});
+
+    const groupedArray = Object.values(groupedData);
+
+    res.status(200).json({
+      message: "success",
+      data: groupedArray,
+      page: Number(page),
+      limit: limit,
     });
   } catch (err) {
     console.error("Error getting data:", err);

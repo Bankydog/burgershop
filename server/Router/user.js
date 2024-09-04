@@ -111,19 +111,43 @@ userRouter.get("/carts/:id", protect, async (req, res) => {
   try {
     const result = await pool.query(
       `SELECT 
-    carts.order_no, carts.state, carts.total_prices, carts.ordered_time, catalog.food_name, cart_items.amount
+        carts.order_no, 
+        carts.state, 
+        carts.total_prices, 
+        carts.ordered_time, 
+        catalog.food_name, 
+        cart_items.amount
       FROM carts
       JOIN cart_items ON carts.cart_id = cart_items.cart_id
       JOIN catalog ON cart_items.catalog_id = catalog.catalog_id
       WHERE carts.user_id = $1
-      AND carts.state != 'finished'
-    `,
+      AND carts.state != 'finished'`,
       [userId]
     );
 
+    // Group the results by order_no
+    const groupedData = result.rows.reduce((acc, item) => {
+      if (!acc[item.order_no]) {
+        acc[item.order_no] = {
+          order_no: item.order_no,
+          ordered_time: item.ordered_time,
+          state: item.state,
+          total_prices: item.total_prices,
+          items: [],
+        };
+      }
+      acc[item.order_no].items.push({
+        food_name: item.food_name,
+        amount: item.amount,
+      });
+      return acc;
+    }, {});
+
+    const groupedArray = Object.values(groupedData);
+
     res.status(200).json({
       message: "success",
-      data: result.rows,
+      data: groupedArray,
     });
   } catch (err) {
     console.error("Error executing query", err.stack);
