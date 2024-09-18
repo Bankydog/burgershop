@@ -77,15 +77,14 @@ export default function CookingPage() {
                 </select>
               </label>
             </div>
-            <div className="grid w-full max-w-6xl grid-cols-1 gap-4 mx-auto md:grid-cols-3">
+            <div className="grid w-full grid-cols-1 gap-4 mx-auto md:grid-cols-4 ">
               {orders.map((order) => (
                 <div
                   key={order.order_no}
-                  className="w-full max-w-lg p-4 border rounded"
+                  className="w-full max-w-lg p-4 bg-orange-100 border border-black rounded"
                 >
                   <h3 className="text-lg font-bold">Order: {order.order_no}</h3>
-                  <p>Status: {order.state}</p>
-                  <p>Total: {order.total_prices} Bath</p>
+
                   <p>
                     Ordered Time:{" "}
                     {new Date(order.ordered_time)
