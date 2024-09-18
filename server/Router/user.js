@@ -125,7 +125,6 @@ userRouter.get("/carts/:id", protect, async (req, res) => {
       [userId]
     );
 
-    // Group the results by order_no
     const groupedData = result.rows.reduce((acc, item) => {
       if (!acc[item.order_no]) {
         acc[item.order_no] = {
@@ -162,28 +161,43 @@ userRouter.post("/carts/:id", protect, async (req, res) => {
   const userId = req.params.id;
   const { total_prices, cartItems, comment } = req.body;
   const state = "ordered";
+
+  const todayDate = new Date()
+    .toLocaleDateString("en-GB", { timeZone: "Asia/Bangkok" })
+    .replace(/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/, "$3-$2-$1");
+
   const ordered_time = new Date()
     .toLocaleString("en-GB", { timeZone: "Asia/Bangkok" })
     .replace(",", "")
     .replace(/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/, "$3-$2-$1");
+
   try {
     await pool.query("BEGIN");
     let newOrderNo;
+
     const orderNoResult = await pool.query(
-      "SELECT order_no FROM carts ORDER BY cart_id DESC LIMIT 1"
+      "SELECT order_no, ordered_time FROM carts ORDER BY cart_id DESC LIMIT 1"
     );
 
     if (orderNoResult.rows.length === 0) {
       newOrderNo = "001";
     } else {
-      const orderNoFormTable = parseInt(orderNoResult.rows[0].order_no, 10);
-      if (orderNoFormTable >= 999) {
+      const latestOrderDate = new Date(orderNoResult.rows[0].ordered_time)
+        .toLocaleDateString("en-GB", { timeZone: "Asia/Bangkok" })
+        .replace(/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/, "$3-$2-$1");
+
+      if (latestOrderDate !== todayDate) {
         newOrderNo = "001";
       } else {
-        newOrderNo = (orderNoFormTable + 1).toString().padStart(3, "0");
+        const orderNoFromTable = parseInt(orderNoResult.rows[0].order_no, 10);
+        if (orderNoFromTable >= 999) {
+          newOrderNo = "001";
+        } else {
+          newOrderNo = (orderNoFromTable + 1).toString().padStart(3, "0");
+        }
       }
     }
-    // console.log(newOrderNo);
+
     const result = await pool.query(
       `INSERT INTO carts (total_prices, state, ordered_time, user_id, comment, order_no)
        VALUES ($1, $2, $3, $4, $5, $6)
@@ -192,6 +206,7 @@ userRouter.post("/carts/:id", protect, async (req, res) => {
     );
 
     const cartId = result.rows[0].cart_id;
+
     for (const entry of cartItems) {
       const { catalog_id, amount } = entry;
 

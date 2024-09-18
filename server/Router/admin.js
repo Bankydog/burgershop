@@ -113,15 +113,21 @@ adminRouter.get("/search", protect, checkAdmin, async (req, res) => {
 
 ////////////////// get order for cookker //////////////////
 adminRouter.get("/cooking", protect, checkAdmin, async (req, res) => {
-  const { state, page } = req.query;
+  const { state, page, order_no } = req.query;
   const limit = 12;
   const offset = (page - 1) * limit;
 
   try {
     const states = state ? state.split(",") : ["ordered", "cooking"];
-    console.log("State filter:", states, "Page:", page, "Offset:", offset);
 
-    // Query to get distinct orders with limit and offset
+    let orderNoCondition = "";
+    const queryParams = [states, limit, offset];
+
+    if (order_no) {
+      orderNoCondition = `AND ca.order_no = $4`;
+      queryParams.push(order_no);
+    }
+
     const result = await pool.query(
       `SELECT DISTINCT ON (ca.order_no) 
         ca.order_no, 
@@ -133,15 +139,14 @@ adminRouter.get("/cooking", protect, checkAdmin, async (req, res) => {
         carts ca
       WHERE
         ca.state = ANY($1)
+        ${orderNoCondition}
       ORDER BY ca.order_no
       LIMIT $2 OFFSET $3;`,
-      [states, limit, offset]
+      queryParams
     );
 
-    // Get the list of order_no from the result
     const orderNos = result.rows.map((order) => order.order_no);
 
-    // Query to get all items for these orders
     const itemsResult = await pool.query(
       `SELECT 
         ca.order_no, 
@@ -158,7 +163,6 @@ adminRouter.get("/cooking", protect, checkAdmin, async (req, res) => {
       [orderNos]
     );
 
-    // Group the items by order_no
     const itemsGrouped = itemsResult.rows.reduce((acc, item) => {
       if (!acc[item.order_no]) {
         acc[item.order_no] = [];
@@ -170,7 +174,6 @@ adminRouter.get("/cooking", protect, checkAdmin, async (req, res) => {
       return acc;
     }, {});
 
-    // Combine orders and items
     const groupedArray = result.rows.map((order) => ({
       ...order,
       items: itemsGrouped[order.order_no] || [],

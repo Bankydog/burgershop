@@ -154,6 +154,67 @@ function PostProvider({ children }) {
     }
   };
 
+  ////////////////// Admin put ordered by start_cook_time //////////////////
+  const putCookingTime = async (data) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:4000/admin/cooking/start`,
+        data
+      );
+      console.log("Response data:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error during PUT request:", error.message);
+      throw new Error("Error occurred while updating cooking time");
+    }
+  };
+
+  ////////////////// Admin put ordered by cooked_time //////////////////
+  const putCookedTime = async (data) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:4000/admin/cooking/complete`,
+        data
+      );
+      console.log("Response data:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error during PUT request:", error.message);
+      throw new Error("Error occurred while updating cooking time");
+    }
+  };
+  ////////////////// Admin search order_no //////////////////
+  const searchOrderNo = async (state, order_no, page) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/admin/cooking?state=${state}&order_no=${order_no}&page=${page}`
+      );
+      console.log("Response data:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error(
+        "Error during GET request:",
+        error.response ? error.response.data : error.message
+      );
+      throw new Error("Error occurred while fetching cooking data");
+    }
+  };
+
+  ////////////////// Admin delete ordered //////////////////
+  const cancelOrder = async (data) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:4000/admin/cooking/cancel`,
+        data
+      );
+      console.log("Response data:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error during PUT request:", error.message);
+      throw new Error("Error occurred while updating cooking time");
+    }
+  };
+
   ////////////////// has data profile? //////////////////
   const hasDataProfile = state.dataProfile.length !== 0;
   // console.log("yes", hasDataProfile);
@@ -172,6 +233,10 @@ function PostProvider({ children }) {
         getPurchaseOrder,
         hasDataProfile,
         getOrdered,
+        putCookingTime,
+        putCookedTime,
+        searchOrderNo,
+        cancelOrder,
       }}
     >
       {children}
