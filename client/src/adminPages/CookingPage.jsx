@@ -43,6 +43,7 @@ export default function CookingPage() {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
+    setPage(1);
     fetchData();
   };
 
