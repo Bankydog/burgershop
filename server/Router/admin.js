@@ -260,7 +260,7 @@ adminRouter.put("/cooking/complete", protect, checkAdmin, async (req, res) => {
 });
 
 ////////////////// put cancel to order //////////////////
-adminRouter.put("/cooking/cancel", protect, checkAdmin, async (req, res) => {
+adminRouter.put("/cancel", protect, checkAdmin, async (req, res) => {
   const { order_no } = req.body;
   const state = "cancel";
 
@@ -292,23 +292,46 @@ adminRouter.put("/cooking/cancel", protect, checkAdmin, async (req, res) => {
 });
 
 ////////////////// get ordered for rider //////////////////
-adminRouter.get("/riding", protect, checkAdmin, async (req, res) => {
-  const { state, page = 1 } = req.query;
-  const limit = 10;
+adminRouter.get("/rider", protect, checkAdmin, async (req, res) => {
+  const { state, page, order_no } = req.query;
+  const limit = 12;
   const offset = (page - 1) * limit;
 
   try {
-    const states = state ? state.split(",") : ["cooked", "riding", "rided"];
+    const states = state ? state.split(",") : ["cooked", "sending", "home"];
+
+    let orderNoCondition = "";
+    const queryParams = [states, limit, offset];
+
+    if (order_no) {
+      orderNoCondition = `AND ca.order_no = $4`;
+      queryParams.push(order_no);
+    }
 
     const result = await pool.query(
+      `SELECT DISTINCT ON (ca.order_no) 
+        ca.order_no, 
+        ca.cooked_time, 
+        ca.state, 
+        ca.total_prices, 
+        ca.comment
+      FROM 
+        carts ca
+      WHERE
+        ca.state = ANY($1)
+        ${orderNoCondition}
+      ORDER BY ca.order_no
+      LIMIT $2 OFFSET $3;`,
+      queryParams
+    );
+
+    const orderNos = result.rows.map((order) => order.order_no);
+
+    const itemsResult = await pool.query(
       `SELECT 
         ca.order_no, 
-        ca.state, 
-        ca.cooked_time, 
-        ca.comment, 
-        ca.total_prices, 
-        ci.amount, 
-        c.food_name
+        c.food_name, 
+        ci.amount
       FROM 
         carts ca
       JOIN 
@@ -316,30 +339,25 @@ adminRouter.get("/riding", protect, checkAdmin, async (req, res) => {
       JOIN 
         catalog c ON ci.catalog_id = c.catalog_id
       WHERE
-        ca.state = ANY($1)
-      LIMIT $2 OFFSET $3;`,
-      [states, limit, offset]
+        ca.order_no = ANY($1);`,
+      [orderNos]
     );
 
-    const groupedData = result.rows.reduce((acc, item) => {
+    const itemsGrouped = itemsResult.rows.reduce((acc, item) => {
       if (!acc[item.order_no]) {
-        acc[item.order_no] = {
-          order_no: item.order_no,
-          cooked_time: item.cooked_time,
-          state: item.state,
-          total_prices: item.total_prices,
-          comment: item.comment,
-          items: [],
-        };
+        acc[item.order_no] = [];
       }
-      acc[item.order_no].items.push({
+      acc[item.order_no].push({
         food_name: item.food_name,
         amount: item.amount,
       });
       return acc;
     }, {});
 
-    const groupedArray = Object.values(groupedData);
+    const groupedArray = result.rows.map((order) => ({
+      ...order,
+      items: itemsGrouped[order.order_no] || [],
+    }));
 
     res.status(200).json({
       message: "success",
@@ -349,6 +367,105 @@ adminRouter.get("/riding", protect, checkAdmin, async (req, res) => {
     });
   } catch (err) {
     console.error("Error getting data:", err);
+    return res.status(500).json({
+      error: "Internal Server Error",
+    });
+  }
+});
+
+////////////////// put sending by send_time //////////////////
+adminRouter.put("/rider/sending", protect, checkAdmin, async (req, res) => {
+  const { order_no } = req.body;
+  const sending_time = formatDate();
+  const state = "sending";
+
+  try {
+    const result = await pool.query(
+      `UPDATE carts 
+       SET state = $1, sending_time = $2 
+       WHERE order_no = $3 
+       RETURNING *;`,
+      [state, sending_time, order_no]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        error: "Order not found",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Order updated successfully",
+      data: result.rows[0],
+    });
+  } catch (err) {
+    console.error("Error updating order:", err);
+    return res.status(500).json({
+      error: "Internal Server Error",
+    });
+  }
+});
+
+////////////////// put sended by sended_time //////////////////
+adminRouter.put("/rider/sended", protect, checkAdmin, async (req, res) => {
+  const { order_no } = req.body;
+  const sended_time = formatDate();
+  const state = "sended";
+
+  try {
+    const result = await pool.query(
+      `UPDATE carts 
+       SET state = $1, sended_time = $2 
+       WHERE order_no = $3 
+       RETURNING *;`,
+      [state, sended_time, order_no]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        error: "Order not found",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Order updated successfully",
+      data: result.rows[0],
+    });
+  } catch (err) {
+    console.error("Error updating order:", err);
+    return res.status(500).json({
+      error: "Internal Server Error",
+    });
+  }
+});
+
+////////////////// put finish by send_time //////////////////
+adminRouter.put("/rider/finish", protect, checkAdmin, async (req, res) => {
+  const { order_no } = req.body;
+  const finish_time = formatDate();
+  const state = "finish";
+
+  try {
+    const result = await pool.query(
+      `UPDATE carts 
+       SET state = $1, finish_time = $2 
+       WHERE order_no = $3 
+       RETURNING *;`,
+      [state, finish_time, order_no]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        error: "Order not found",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Order updated successfully",
+      data: result.rows[0],
+    });
+  } catch (err) {
+    console.error("Error updating order:", err);
     return res.status(500).json({
       error: "Internal Server Error",
     });

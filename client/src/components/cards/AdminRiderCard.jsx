@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function AdminCookCard({
+export default function AdminRiderCard({
   orders,
   handleStartCooking,
   handleCancelOrder,

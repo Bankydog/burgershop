@@ -141,20 +141,7 @@ function PostProvider({ children }) {
     }
   };
 
-  ////////////////// admin get ordered //////////////////
-  const getOrdered = async (page, states) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:4000/admin/cooking?page=${page}&states=${states}`
-      );
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching ordered data:", error.message);
-      throw error;
-    }
-  };
-
-  ////////////////// Admin put ordered by start_cook_time //////////////////
+  ////////////////// Admin put cookinging by start_cook_time //////////////////
   const putCookingTime = async (data) => {
     try {
       const response = await axios.put(
@@ -165,11 +152,11 @@ function PostProvider({ children }) {
       return response.data;
     } catch (error) {
       console.error("Error during PUT request:", error.message);
-      throw new Error("Error occurred while updating cooking time");
+      throw new Error("Error occurred while updating");
     }
   };
 
-  ////////////////// Admin put ordered by cooked_time //////////////////
+  ////////////////// Admin put cooked by cooked_time //////////////////
   const putCookedTime = async (data) => {
     try {
       const response = await axios.put(
@@ -180,38 +167,67 @@ function PostProvider({ children }) {
       return response.data;
     } catch (error) {
       console.error("Error during PUT request:", error.message);
-      throw new Error("Error occurred while updating cooking time");
-    }
-  };
-  ////////////////// Admin search order_no //////////////////
-  const searchOrderNo = async (state, order_no, page) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:4000/admin/cooking?state=${state}&order_no=${order_no}&page=${page}`
-      );
-      console.log("Response data:", response.data);
-      return response.data;
-    } catch (error) {
-      console.error(
-        "Error during GET request:",
-        error.response ? error.response.data : error.message
-      );
-      throw new Error("Error occurred while fetching cooking data");
+      throw new Error("Error occurred while updating");
     }
   };
 
-  ////////////////// Admin delete ordered //////////////////
-  const cancelOrder = async (data) => {
+  ////////////////// Admin put sending by sending_time //////////////////
+  const putSendingTime = async (data) => {
     try {
       const response = await axios.put(
-        `http://localhost:4000/admin/cooking/cancel`,
+        `http://localhost:4000/admin/rider/sending`,
         data
       );
       console.log("Response data:", response.data);
       return response.data;
     } catch (error) {
       console.error("Error during PUT request:", error.message);
-      throw new Error("Error occurred while updating cooking time");
+      throw new Error("Error occurred while updating");
+    }
+  };
+
+  ////////////////// Admin put sended by sended_time //////////////////
+  const putSendedTime = async (data) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:4000/admin/rider/sended`,
+        data
+      );
+      console.log("Response data:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error during PUT request:", error.message);
+      throw new Error("Error occurred while updating");
+    }
+  };
+
+  ////////////////// Admin put Finish by Finish_time //////////////////
+  const putFinishTime = async (data) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:4000/admin/rider/finish`,
+        data
+      );
+      console.log("Response data:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error during PUT request:", error.message);
+      throw new Error("Error occurred while updating");
+    }
+  };
+
+  ////////////////// Admin cancel order //////////////////
+  const cancelOrder = async (data) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:4000/admin/cancel`,
+        data
+      );
+      console.log("Response data:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error during PUT request:", error.message);
+      throw new Error("Error Cancel order");
     }
   };
 
@@ -232,10 +248,11 @@ function PostProvider({ children }) {
         postCartItems,
         getPurchaseOrder,
         hasDataProfile,
-        getOrdered,
         putCookingTime,
         putCookedTime,
-        searchOrderNo,
+        putSendingTime,
+        putSendedTime,
+        putFinishTime,
         cancelOrder,
       }}
     >
