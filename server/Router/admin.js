@@ -7,6 +7,12 @@ import { cloudinaryUpload } from "../utils/upload.js";
 
 const adminRouter = Router();
 const upload = multer({ dest: "uploads/" });
+const formatDate = () => {
+  return new Date()
+    .toLocaleString("en-GB", { timeZone: "Asia/Bangkok" })
+    .replace(",", "")
+    .replace(/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/, "$3-$2-$1");
+};
 
 ////////////////// post menu //////////////////
 
@@ -107,31 +113,239 @@ adminRouter.get("/search", protect, checkAdmin, async (req, res) => {
 
 ////////////////// get order for cookker //////////////////
 adminRouter.get("/cooking", protect, checkAdmin, async (req, res) => {
+  const { state, page, order_no } = req.query;
+  const limit = 12;
+  const offset = (page - 1) * limit;
+
   try {
+    const states = state ? state.split(",") : ["ordered", "cooking"];
+
+    let orderNoCondition = "";
+    const queryParams = [states, limit, offset];
+
+    if (order_no) {
+      orderNoCondition = `AND ca.order_no = $4`;
+      queryParams.push(order_no);
+    }
+
     const result = await pool.query(
-      `SELECT 
-        p.name, 
-        p.lastname, 
-        c.food_name, 
-        ca.state, 
+      `SELECT DISTINCT ON (ca.order_no) 
+        ca.order_no, 
         ca.ordered_time, 
-        ca.comment, 
+        ca.state, 
+        ca.total_prices, 
+        ca.comment
+      FROM 
+        carts ca
+      WHERE
+        ca.state = ANY($1)
+        ${orderNoCondition}
+      ORDER BY ca.order_no
+      LIMIT $2 OFFSET $3;`,
+      queryParams
+    );
+
+    const orderNos = result.rows.map((order) => order.order_no);
+
+    const itemsResult = await pool.query(
+      `SELECT 
+        ca.order_no, 
+        c.food_name, 
         ci.amount
       FROM 
-        profile p
-      JOIN 
-        carts ca ON p.user_id = ca.user_id
+        carts ca
       JOIN 
         cart_items ci ON ca.cart_id = ci.cart_id
       JOIN 
         catalog c ON ci.catalog_id = c.catalog_id
       WHERE
-         ca.state IN ('waiting', 'cooking');`
+        ca.order_no = ANY($1);`,
+      [orderNos]
     );
 
+    const itemsGrouped = itemsResult.rows.reduce((acc, item) => {
+      if (!acc[item.order_no]) {
+        acc[item.order_no] = [];
+      }
+      acc[item.order_no].push({
+        food_name: item.food_name,
+        amount: item.amount,
+      });
+      return acc;
+    }, {});
+
+    const groupedArray = result.rows.map((order) => ({
+      ...order,
+      items: itemsGrouped[order.order_no] || [],
+    }));
+
     res.status(200).json({
-      message: "Fetch data complete",
-      data: result.rows,
+      message: "success",
+      data: groupedArray,
+      page: Number(page),
+      limit: limit,
+    });
+  } catch (err) {
+    console.error("Error getting data:", err);
+    return res.status(500).json({
+      error: "Internal Server Error",
+    });
+  }
+});
+
+////////////////// put ordered by start_cook_time //////////////////
+adminRouter.put("/cooking/start", protect, checkAdmin, async (req, res) => {
+  const { order_no } = req.body;
+  const start_cook_time = formatDate();
+  const state = "cooking";
+
+  try {
+    const result = await pool.query(
+      `UPDATE carts 
+       SET state = $1, start_cook_time = $2 
+       WHERE order_no = $3 
+       RETURNING *;`,
+      [state, start_cook_time, order_no]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        error: "Order not found",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Order updated successfully",
+      data: result.rows[0],
+    });
+  } catch (err) {
+    console.error("Error updating order:", err);
+    return res.status(500).json({
+      error: "Internal Server Error",
+    });
+  }
+});
+
+////////////////// put ordered by cooked_time //////////////////
+adminRouter.put("/cooking/complete", protect, checkAdmin, async (req, res) => {
+  const { order_no } = req.body;
+  const cooked_time = formatDate();
+  const state = "cooked";
+
+  try {
+    const result = await pool.query(
+      `UPDATE carts 
+       SET state = $1, cooked_time = $2 
+       WHERE order_no = $3 
+       RETURNING *;`,
+      [state, cooked_time, order_no]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        error: "Order not found",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Order updated successfully",
+      data: result.rows[0],
+    });
+  } catch (err) {
+    console.error("Error updating order:", err);
+    return res.status(500).json({
+      error: "Internal Server Error",
+    });
+  }
+});
+
+////////////////// put cancel to order //////////////////
+adminRouter.put("/cooking/cancel", protect, checkAdmin, async (req, res) => {
+  const { order_no } = req.body;
+  const state = "cancel";
+
+  try {
+    const result = await pool.query(
+      `UPDATE carts 
+       SET state = $1
+       WHERE order_no = $2
+       RETURNING *;`,
+      [state, order_no]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        error: "Order not found",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Order updated successfully",
+      data: result.rows[0],
+    });
+  } catch (err) {
+    console.error("Error updating order:", err);
+    return res.status(500).json({
+      error: "Internal Server Error",
+    });
+  }
+});
+
+////////////////// get ordered for rider //////////////////
+adminRouter.get("/riding", protect, checkAdmin, async (req, res) => {
+  const { state, page = 1 } = req.query;
+  const limit = 10;
+  const offset = (page - 1) * limit;
+
+  try {
+    const states = state ? state.split(",") : ["cooked", "riding", "rided"];
+
+    const result = await pool.query(
+      `SELECT 
+        ca.order_no, 
+        ca.state, 
+        ca.cooked_time, 
+        ca.comment, 
+        ca.total_prices, 
+        ci.amount, 
+        c.food_name
+      FROM 
+        carts ca
+      JOIN 
+        cart_items ci ON ca.cart_id = ci.cart_id
+      JOIN 
+        catalog c ON ci.catalog_id = c.catalog_id
+      WHERE
+        ca.state = ANY($1)
+      LIMIT $2 OFFSET $3;`,
+      [states, limit, offset]
+    );
+
+    const groupedData = result.rows.reduce((acc, item) => {
+      if (!acc[item.order_no]) {
+        acc[item.order_no] = {
+          order_no: item.order_no,
+          cooked_time: item.cooked_time,
+          state: item.state,
+          total_prices: item.total_prices,
+          comment: item.comment,
+          items: [],
+        };
+      }
+      acc[item.order_no].items.push({
+        food_name: item.food_name,
+        amount: item.amount,
+      });
+      return acc;
+    }, {});
+
+    const groupedArray = Object.values(groupedData);
+
+    res.status(200).json({
+      message: "success",
+      data: groupedArray,
+      page: Number(page),
+      limit: limit,
     });
   } catch (err) {
     console.error("Error getting data:", err);

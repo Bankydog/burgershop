@@ -105,27 +105,48 @@ userRouter.put("/profile/:id", protect, async (req, res) => {
     });
   }
 });
-////////////////// get data from carts //////////////////
+////////////////// user get data from carts&cart_items by ID //////////////////
 userRouter.get("/carts/:id", protect, async (req, res) => {
   const userId = req.params.id;
   try {
-    // const result = await pool.query(
-    //   `
-    //   SELECT carts.user_id, carts.state, carts.ordered_time,
-    //    cart_items.catalog_id, cart_items.amount
-    //   FROM carts
-    //   JOIN cart_items USING (cart_id)
-    //   WHERE carts.user_id = $1
-    // `,
-    //   [userId]
-    // );
-    const result = await pool.query(`select * from carts where user_id = $1`, [
-      userId,
-    ]);
+    const result = await pool.query(
+      `SELECT 
+        carts.order_no, 
+        carts.state, 
+        carts.total_prices, 
+        carts.ordered_time, 
+        catalog.food_name, 
+        cart_items.amount
+      FROM carts
+      JOIN cart_items ON carts.cart_id = cart_items.cart_id
+      JOIN catalog ON cart_items.catalog_id = catalog.catalog_id
+      WHERE carts.user_id = $1
+      AND carts.state != 'finished'`,
+      [userId]
+    );
+
+    const groupedData = result.rows.reduce((acc, item) => {
+      if (!acc[item.order_no]) {
+        acc[item.order_no] = {
+          order_no: item.order_no,
+          ordered_time: item.ordered_time,
+          state: item.state,
+          total_prices: item.total_prices,
+          items: [],
+        };
+      }
+      acc[item.order_no].items.push({
+        food_name: item.food_name,
+        amount: item.amount,
+      });
+      return acc;
+    }, {});
+
+    const groupedArray = Object.values(groupedData);
 
     res.status(200).json({
       message: "success",
-      data: result.rows,
+      data: groupedArray,
     });
   } catch (err) {
     console.error("Error executing query", err.stack);
@@ -139,24 +160,52 @@ userRouter.get("/carts/:id", protect, async (req, res) => {
 userRouter.post("/carts/:id", protect, async (req, res) => {
   const userId = req.params.id;
   const { total_prices, cartItems, comment } = req.body;
-  const state = "oredered";
+  const state = "ordered";
+
+  const todayDate = new Date()
+    .toLocaleDateString("en-GB", { timeZone: "Asia/Bangkok" })
+    .replace(/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/, "$3-$2-$1");
+
   const ordered_time = new Date()
     .toLocaleString("en-GB", { timeZone: "Asia/Bangkok" })
     .replace(",", "")
-    .replace(/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/, "$3-$2-$1"); // Change format to YYYY-MM-DD
+    .replace(/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/, "$3-$2-$1");
 
   try {
     await pool.query("BEGIN");
+    let newOrderNo;
+
+    const orderNoResult = await pool.query(
+      "SELECT order_no, ordered_time FROM carts ORDER BY cart_id DESC LIMIT 1"
+    );
+
+    if (orderNoResult.rows.length === 0) {
+      newOrderNo = "001";
+    } else {
+      const latestOrderDate = new Date(orderNoResult.rows[0].ordered_time)
+        .toLocaleDateString("en-GB", { timeZone: "Asia/Bangkok" })
+        .replace(/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/, "$3-$2-$1");
+
+      if (latestOrderDate !== todayDate) {
+        newOrderNo = "001";
+      } else {
+        const orderNoFromTable = parseInt(orderNoResult.rows[0].order_no, 10);
+        if (orderNoFromTable >= 999) {
+          newOrderNo = "001";
+        } else {
+          newOrderNo = (orderNoFromTable + 1).toString().padStart(3, "0");
+        }
+      }
+    }
 
     const result = await pool.query(
-      `INSERT INTO carts (total_prices, state, ordered_time, user_id, comment)
-       VALUES ($1, $2, $3, $4, $5) 
+      `INSERT INTO carts (total_prices, state, ordered_time, user_id, comment, order_no)
+       VALUES ($1, $2, $3, $4, $5, $6)
        RETURNING cart_id, user_id, comment`,
-      [total_prices, state, ordered_time, userId, comment]
+      [total_prices, state, ordered_time, userId, comment, newOrderNo]
     );
 
     const cartId = result.rows[0].cart_id;
-    // console.log("cart_id : ", cartId);
 
     for (const entry of cartItems) {
       const { catalog_id, amount } = entry;
@@ -164,7 +213,7 @@ userRouter.post("/carts/:id", protect, async (req, res) => {
       await pool.query(
         `INSERT INTO cart_items (cart_id, catalog_id, amount)
          VALUES ($1, $2, $3)
-         ON CONFLICT (cart_id, catalog_id) 
+         ON CONFLICT (cart_id, catalog_id)
          DO UPDATE SET amount = EXCLUDED.amount`,
         [cartId, catalog_id, amount]
       );
