@@ -4,6 +4,7 @@ import { protect } from "../middlewares/protect.js";
 import { checkAdmin } from "../middlewares/checkAdmin.js";
 import multer from "multer";
 import { cloudinaryUpload } from "../utils/upload.js";
+import { body, validationResult } from "express-validator";
 
 const adminRouter = Router();
 const upload = multer({ dest: "uploads/" });
