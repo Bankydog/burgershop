@@ -298,10 +298,10 @@ adminRouter.get("/rider", protect, checkAdmin, async (req, res) => {
   const offset = (page - 1) * limit;
 
   try {
-    const states = state ? state.split(",") : ["cooked", "sending", "home"];
+    const states = state ? state.split(",") : ["cooked", "sending", "sended"];
+    const queryParams = [states, limit, offset];
 
     let orderNoCondition = "";
-    const queryParams = [states, limit, offset];
 
     if (order_no) {
       orderNoCondition = `AND ca.order_no = $4`;
