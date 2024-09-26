@@ -492,4 +492,31 @@ adminRouter.delete("/:id", protect, checkAdmin, async (req, res) => {
   }
 });
 
+////////////////// get total sales for statistics-page //////////////////
+adminRouter.get("/statistics", protect, checkAdmin, async (req, res) => {
+  try {
+    const result = await pool.query(`
+    SELECT 
+      SUM(total_prices) AS total_sales, 
+      COUNT(DISTINCT order_no) AS total_orders,
+      COUNT(DISTINCT CASE WHEN state = 'cancel' THEN order_no END) AS cancel_orders
+    FROM 
+      carts
+    WHERE 
+      state IN ('finish', 'cancel');
+    `);
+    const finishesOrder = result.rows[0].total_orders;
+    const cancelOrders = result.rows[0].cancel_orders;
+    const totalSales = result.rows[0].total_sales;
+    const newTotalSales = parseInt(totalSales, 10).toLocaleString("en-US");
+
+    return res.status(200).json({ newTotalSales, finishesOrder, cancelOrders });
+  } catch (error) {
+    console.error("Error fetching total sales:", err);
+    return res.status(500).json({
+      error: "Internal Server Error",
+    });
+  }
+});
+
 export default adminRouter;

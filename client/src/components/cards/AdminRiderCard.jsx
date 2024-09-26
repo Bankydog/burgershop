@@ -53,30 +53,30 @@ export default function AdminRiderCard({
           <div className="grid grid-cols-2 gap-3 mt-3 text-2xl md:grid-cols-2 place-items-center">
             <button
               className={`w-[100px] h-[40px] border-2 border-black rounded-lg text-white ${
-                order.state === "sending"
+                ["sending", "sended"].includes(order.state)
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-yellow-500 hover:bg-yellow-400 hover:text-slate-100"
               }`}
               onClick={() => handleStartSending(order.order_no)}
-              disabled={order.state === "sending"}
+              disabled={["sending", "sended"].includes(order.state)}
             >
               Sending
             </button>
             <button
-              className={`w-[100px] h-[40px] bg-blue-500 border-2 border-black rounded-lg text-white hover:bg-green-400 hover:text-slate-100 ${
-                ["sending", "sended", "ordered"].includes(order.state)
+              className={`w-[100px] h-[40px] bg-blue-500 border-2 border-black rounded-lg text-white  ${
+                ["sended"].includes(order.state)
                   ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-blue-500 hover:bg-green-400 hover:text-slate-100"
+                  : "bg-blue-500 hover:bg-blue-400 hover:text-slate-100"
               }`}
               onClick={() => handleSended(order.order_no)}
-              disabled={["sending", "sended", "ordered"].includes(order.state)}
+              disabled={["cooked", "sended"].includes(order.state)}
             >
               Sended
             </button>
             <button
               className="w-[100px] h-[40px] bg-green-500 border-2 border-black rounded-lg text-white hover:bg-green-400 hover:text-slate-100"
               onClick={() => handleFinished(order.order_no)}
-              disabled={order.state === "ordered"}
+              disabled={["cooked", "sending"].includes(order.state)}
             >
               Finish
             </button>
