@@ -1,3 +1,4 @@
+import React from "react";
 import NoneUser from "./pages/NoneUser.jsx";
 import { useAuth } from "./context/Authentication.jsx";
 import Admin from "./adminPages/Admin.jsx";
