@@ -157,13 +157,17 @@ export default function RiderPage() {
                 </button>
               </form>
             </div>
-            <AdminRiderCard
-              orders={orders}
-              handleStartSending={handleStartSending}
-              handleSended={handleSended}
-              handleFinished={handleFinished}
-              handleCancelOrder={handleCancelOrder}
-            />
+            {orders.length > 0 ? (
+              <AdminRiderCard
+                orders={orders}
+                handleStartSending={handleStartSending}
+                handleSended={handleSended}
+                handleFinished={handleFinished}
+                handleCancelOrder={handleCancelOrder}
+              />
+            ) : (
+              <div className="text-center">No orders available</div>
+            )}
             <div className="flex items-center justify-center w-full my-4">
               <button
                 onClick={() => handlePageChange("prev")}

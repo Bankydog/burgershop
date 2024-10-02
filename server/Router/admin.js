@@ -13,6 +13,9 @@ const formatDate = () => {
     .replace(",", "")
     .replace(/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/, "$3-$2-$1");
 };
+const getCurrentYear = () => {
+  return new Date().getFullYear();
+};
 
 ////////////////// post menu //////////////////
 
@@ -496,9 +499,12 @@ adminRouter.delete("/:id", protect, checkAdmin, async (req, res) => {
 ////////////////// get total sales for statistics-page //////////////////
 adminRouter.get("/statistics", protect, checkAdmin, async (req, res) => {
   try {
-    const year = req.query.year;
-    const month = req.query.month;
-    const day = req.query.day;
+    let year = req.query.year;
+    const { month, day } = req.query;
+
+    if (!year) {
+      year = new Date().getFullYear();
+    }
 
     let query = `
       SELECT 
@@ -534,7 +540,7 @@ adminRouter.get("/statistics", protect, checkAdmin, async (req, res) => {
     }
 
     const result = await pool.query(query, queryParams);
-    console.log("data", result.rows[0]);
+    // console.log("data", result.rows[0]);
 
     const finishesOrder = result.rows[0].finish_orders || 0;
     const cancelOrders = result.rows[0].cancel_orders || 0;

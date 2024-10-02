@@ -142,12 +142,16 @@ export default function CookingPage() {
                 </button>
               </form>
             </div>
-            <AdminCookCard
-              orders={orders}
-              handleStartCooking={handleStartCooking}
-              handleCancelOrder={handleCancelOrder}
-              handleCooked={handleCooked}
-            />
+            {orders.length > 0 ? (
+              <AdminCookCard
+                orders={orders}
+                handleStartCooking={handleStartCooking}
+                handleCancelOrder={handleCancelOrder}
+                handleCooked={handleCooked}
+              />
+            ) : (
+              <div className="text-center">No orders available</div>
+            )}
             <div className="flex items-center justify-center w-full my-4">
               <button
                 onClick={() => handlePageChange("prev")}
