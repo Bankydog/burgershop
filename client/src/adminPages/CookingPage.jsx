@@ -8,7 +8,7 @@ import AdminCookCard from "../components/cards/AdminCookCard.jsx";
 export default function CookingPage() {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [states, setStates] = useState("ordered,cooking");
+  const [states, setStates] = useState("");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const { putCookingTime, putCookedTime, cancelOrder } = usePost();
@@ -115,7 +115,7 @@ export default function CookingPage() {
                   onChange={handleStatesChange}
                   value={states}
                 >
-                  <option value="ordered,cooking">-- Select a state --</option>
+                  <option value="">-- Select a state --</option>
                   <option value="ordered">ordered</option>
                   <option value="cooking">cooking</option>
                   <option value="ordered,cooking">ordered, cooking</option>
@@ -142,12 +142,16 @@ export default function CookingPage() {
                 </button>
               </form>
             </div>
-            <AdminCookCard
-              orders={orders}
-              handleStartCooking={handleStartCooking}
-              handleCancelOrder={handleCancelOrder}
-              handleCooked={handleCooked}
-            />
+            {orders.length > 0 ? (
+              <AdminCookCard
+                orders={orders}
+                handleStartCooking={handleStartCooking}
+                handleCancelOrder={handleCancelOrder}
+                handleCooked={handleCooked}
+              />
+            ) : (
+              <div className="text-center">No orders available</div>
+            )}
             <div className="flex items-center justify-center w-full my-4">
               <button
                 onClick={() => handlePageChange("prev")}

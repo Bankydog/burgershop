@@ -13,6 +13,9 @@ const formatDate = () => {
     .replace(",", "")
     .replace(/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/, "$3-$2-$1");
 };
+const getCurrentYear = () => {
+  return new Date().getFullYear();
+};
 
 ////////////////// post menu //////////////////
 
@@ -262,15 +265,16 @@ adminRouter.put("/cooking/complete", protect, checkAdmin, async (req, res) => {
 ////////////////// put cancel to order //////////////////
 adminRouter.put("/cancel", protect, checkAdmin, async (req, res) => {
   const { order_no } = req.body;
+  const cancel_time = formatDate();
   const state = "cancel";
 
   try {
     const result = await pool.query(
       `UPDATE carts 
-       SET state = $1
-       WHERE order_no = $2
+       SET state = $1, cancel_time = $2
+       WHERE order_no = $3
        RETURNING *;`,
-      [state, order_no]
+      [state, cancel_time, order_no]
     );
 
     if (result.rowCount === 0) {
@@ -298,10 +302,10 @@ adminRouter.get("/rider", protect, checkAdmin, async (req, res) => {
   const offset = (page - 1) * limit;
 
   try {
-    const states = state ? state.split(",") : ["cooked", "sending", "home"];
+    const states = state ? state.split(",") : ["cooked", "sending", "sended"];
+    const queryParams = [states, limit, offset];
 
     let orderNoCondition = "";
-    const queryParams = [states, limit, offset];
 
     if (order_no) {
       orderNoCondition = `AND ca.order_no = $4`;
@@ -486,6 +490,66 @@ adminRouter.delete("/:id", protect, checkAdmin, async (req, res) => {
     });
   } catch (err) {
     console.error("error");
+    return res.status(500).json({
+      error: "Internal Server Error",
+    });
+  }
+});
+
+////////////////// get total sales for statistics-page //////////////////
+adminRouter.get("/statistics", protect, checkAdmin, async (req, res) => {
+  try {
+    let year = req.query.year;
+    const { month, day } = req.query;
+
+    if (!year) {
+      year = new Date().getFullYear();
+    }
+
+    let query = `
+      SELECT 
+        SUM(total_prices) AS total_sales, 
+        COUNT(CASE WHEN state = 'finish' THEN finish_time END) AS finish_orders,
+        COUNT(CASE WHEN state = 'cancel' THEN cancel_time END) AS cancel_orders
+      FROM 
+        carts
+      WHERE 
+        state IN ('finish', 'cancel')
+        AND (
+          EXTRACT(YEAR FROM finish_time) = $1 OR 
+          EXTRACT(YEAR FROM cancel_time) = $1
+        )
+    `;
+
+    const queryParams = [year];
+
+    if (month) {
+      query += ` AND (
+                    EXTRACT(MONTH FROM finish_time) = $2 OR 
+                    EXTRACT(MONTH FROM cancel_time) = $2
+                  )`;
+      queryParams.push(month);
+    }
+
+    if (day) {
+      query += ` AND (
+                    EXTRACT(DAY FROM finish_time) = $3 OR 
+                    EXTRACT(DAY FROM cancel_time) = $3
+                  )`;
+      queryParams.push(day);
+    }
+
+    const result = await pool.query(query, queryParams);
+    // console.log("data", result.rows[0]);
+
+    const finishesOrder = result.rows[0].finish_orders || 0;
+    const cancelOrders = result.rows[0].cancel_orders || 0;
+    const totalSales = result.rows[0].total_sales || 0;
+    const newTotalSales = parseInt(totalSales, 10).toLocaleString("en-US");
+
+    return res.status(200).json({ newTotalSales, finishesOrder, cancelOrders });
+  } catch (error) {
+    console.error("Error fetching total sales:", error);
     return res.status(500).json({
       error: "Internal Server Error",
     });

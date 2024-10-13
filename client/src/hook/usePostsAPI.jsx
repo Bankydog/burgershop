@@ -231,6 +231,22 @@ function PostProvider({ children }) {
     }
   };
 
+  ////////////////// Admin get data statistics //////////////////
+  const getStatistics = async (year, month, day) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/admin/statistics`,
+        {
+          params: { year, month, day },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error during GET request:", error.message);
+      throw new Error("Error fetching statistics");
+    }
+  };
+
   ////////////////// has data profile? //////////////////
   const hasDataProfile = state.dataProfile.length !== 0;
   // console.log("yes", hasDataProfile);
@@ -253,6 +269,7 @@ function PostProvider({ children }) {
         putSendingTime,
         putSendedTime,
         putFinishTime,
+        getStatistics,
         cancelOrder,
       }}
     >
