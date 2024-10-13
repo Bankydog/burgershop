@@ -69,7 +69,6 @@ export default function StatisticsPage() {
                   onChange={handleDateChange}
                 />
               </div>
-
               <div className="flex flex-col items-center">
                 <label htmlFor="month" className="">
                   Month
@@ -87,7 +86,6 @@ export default function StatisticsPage() {
                   disabled={!year}
                 />
               </div>
-
               <div className="flex flex-col text-center">
                 <label htmlFor="day" className="">
                   Day
@@ -106,7 +104,6 @@ export default function StatisticsPage() {
                 />
               </div>
             </div>
-
             <button
               className={`mt-4 w-[100px] h-[50px] mb-3 bg-blue-500 text-white rounded ${
                 !canSearch ? "opacity-50 cursor-not-allowed" : ""
@@ -118,20 +115,20 @@ export default function StatisticsPage() {
             </button>
           </div>
           <div className="flex flex-col items-center">
-            <h1 className="text-5xl">Total sales</h1>
+            <h1 className="mb-2 text-5xl">Total sales</h1>
             <div className="w-[300px] h-[80px] md:w-[600px] md:h-[80px] bg-white rounded-xl border-solid border-8 border-black">
               {data.newTotalSales}
             </div>
           </div>
           <div className="flex flex-col gap-2 mt-5 md:flex md:flex-row">
             <div className="flex flex-col items-center">
-              <p className="text-5xl">Finishes</p>
+              <p className="mb-2 text-5xl">Finishes</p>
               <div className="w-[300px] h-[80px] bg-white rounded-xl border-solid border-8 border-green-400">
                 {data.finishesOrder}
               </div>
             </div>
             <div className="flex flex-col items-center">
-              <p className="text-5xl">Cancels</p>
+              <p className="mb-2 text-5xl">Cancels</p>
               <div className="w-[300px] h-[80px] bg-white rounded-xl border-solid border-8 border-rose-400">
                 {data.cancelOrders}
               </div>

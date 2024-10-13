@@ -26,11 +26,10 @@ const StatusPage = () => {
       setIsLoading(false);
     }
   };
+
   useEffect(() => {
     fetchData();
   }, [userId]);
-
-  console.log("group data is :", orderData);
 
   const handleSeeMore = (order_no) => {
     setExpandedOrders((prev) => ({
@@ -39,9 +38,13 @@ const StatusPage = () => {
     }));
   };
 
+  const filteredOrders = orderData.filter(
+    ({ state }) => !["finish", "cancel"].includes(state)
+  );
+
   if (isLoading) {
     return (
-      <div className="h-screen w-full flex justify-center items-center">
+      <div className="flex items-center justify-center w-full h-screen">
         <TailSpin
           visible={true}
           height="80"
@@ -58,7 +61,7 @@ const StatusPage = () => {
 
   if (error) {
     return (
-      <div className="h-screen w-full flex justify-center items-center">
+      <div className="flex items-center justify-center w-full h-screen">
         <p className="text-red-500">{error}</p>
       </div>
     );
@@ -68,13 +71,13 @@ const StatusPage = () => {
     <>
       <Header />
       <Navbar />
-      <div className="h-screen w-full flex flex-col items-center p-6">
-        <h1 className="text-2xl font-bold mb-4">Order Status</h1>
+      <div className="flex flex-col items-center w-full h-screen p-6">
+        <h1 className="mb-4 text-2xl font-bold">Order Status</h1>
         {orderData.length > 0 ? (
-          <div className="w-full max-w-2xl bg-white p-6 rounded-lg shadow-md">
-            {orderData.map((order) => (
+          <div className="w-full max-w-2xl p-6 bg-white rounded-lg shadow-md">
+            {filteredOrders.map((order) => (
               <div key={order.order_no} className="mb-4">
-                <h2 className="text-xl font-semibold mb-2">
+                <h2 className="mb-2 text-xl font-semibold">
                   Order Number: {order.order_no}
                 </h2>
                 <p>
@@ -87,8 +90,6 @@ const StatusPage = () => {
                   <strong>Ordered Time:</strong>{" "}
                   {new Date(order.ordered_time).toLocaleString()}
                 </p>
-
-                {/* Conditionally render items if expanded */}
                 {expandedOrders[order.order_no] && (
                   <div>
                     <h3 className="text-lg font-semibold">Items:</h3>
@@ -101,7 +102,6 @@ const StatusPage = () => {
                     </ul>
                   </div>
                 )}
-
                 {/* See More button */}
                 <button
                   className="mt-2 text-blue-500 hover:underline"
