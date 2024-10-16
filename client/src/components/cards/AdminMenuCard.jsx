@@ -33,7 +33,7 @@ const AdminMenuCard = ({ categories, data, fetchData }) => {
 
   return (
     <div className="flex flex-col items-center justify-center h-auto">
-      <div className="w-full max-w-5xl mt-3">
+      <div className="w-full max-w-5xl mt-3 ">
         {categories.map((category, index) => (
           <div key={index} className="mb-8">
             <h1
@@ -43,14 +43,14 @@ const AdminMenuCard = ({ categories, data, fetchData }) => {
             >
               {category.name}
             </h1>
-            <ul className="w-[1000px] flex flex-wrap justify-center items-center gap-4">
+            <ul className="flex flex-wrap items-center justify-center w-full gap-4">
               {data
                 .filter((items) => items[0].catalog === category.value)
-                .map((items, idx) =>
+                .flatMap((items, idx) =>
                   items.map((item, index) => (
                     <li
                       key={index}
-                      className="flex flex-col items-center p-4 mt-2 bg-white rounded-lg shadow-md"
+                      className="flex flex-col items-center p-4 mt-2 bg-white rounded-lg shadow-md w-[90%] smm:w-[300px] md:w-[250px] lg:w-[200px]"
                     >
                       <div className="mb-2 font-semibold">{item.food_name}</div>
                       <div className="mb-2">{item.price}</div>
@@ -62,7 +62,7 @@ const AdminMenuCard = ({ categories, data, fetchData }) => {
                       <div>{item.description}</div>
                       <button
                         onClick={() => handleDelete(item)}
-                        className="w-[100px] h-[30px] bg-red-500 rounded mt-2 text-lg shadow-md hover:bg-red-700 hover:text-white"
+                        className="w-full h-[30px] bg-red-500 rounded mt-2 text-lg shadow-md hover:bg-red-700 hover:text-white"
                       >
                         DELETE
                       </button>
