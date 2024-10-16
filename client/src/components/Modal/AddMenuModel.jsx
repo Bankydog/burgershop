@@ -15,6 +15,7 @@ const AddMenuModel = ({ isVisible, onClose, fetchData }) => {
   const [picture, setPicture] = useState(null);
   const [description, setDescription] = useState("");
   const [isUploading, setIsUploading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
@@ -37,6 +38,7 @@ const AddMenuModel = ({ isVisible, onClose, fetchData }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsUploading(true);
+    setErrorMessage(""); // Reset any previous error message
 
     const formData = new FormData();
     formData.append("name", name);
@@ -49,7 +51,14 @@ const AddMenuModel = ({ isVisible, onClose, fetchData }) => {
       await addMenu(formData);
       setShowModal(true);
       fetchData();
+      // Reset form fields after successful submission
+      setName("");
+      setCatalog("");
+      setPrice("");
+      setDescription("");
+      setPicture(null);
     } catch (error) {
+      setErrorMessage("Error adding menu: " + error.message); // Display error message
       console.error("Error adding menu:", error);
     } finally {
       setIsUploading(false);
@@ -65,7 +74,7 @@ const AddMenuModel = ({ isVisible, onClose, fetchData }) => {
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-25 backdrop-blur-sm">
       <div className="w-[600px] flex flex-col">
         <form onSubmit={handleSubmit}>
-          <div className="flex flex-col items-center justify-center w-full p-2 bg-white rounded">
+          <div className="flex flex-col items-center justify-center w-full p-4 bg-white rounded">
             <button
               type="button"
               className="self-end pb-2 mr-2 text-xl text-black"
@@ -74,11 +83,11 @@ const AddMenuModel = ({ isVisible, onClose, fetchData }) => {
               X
             </button>
             <h1>Add Menu</h1>
-            <label>
+
+            {/* Input Fields */}
+            <label className="flex flex-col w-full mb-2">
               Name
               <input
-                id="name"
-                name="name"
                 type="text"
                 placeholder="Add name of menu"
                 className="p-1 border rounded"
@@ -87,11 +96,9 @@ const AddMenuModel = ({ isVisible, onClose, fetchData }) => {
                 required
               />
             </label>
-            <label>
+            <label className="flex flex-col w-full mb-2">
               Category
               <select
-                id="catalog"
-                name="catalog"
                 className="p-1 border rounded"
                 onChange={(e) => setCatalog(e.target.value)}
                 value={catalog}
@@ -107,11 +114,9 @@ const AddMenuModel = ({ isVisible, onClose, fetchData }) => {
                 <option value="beverage">Beverage</option>
               </select>
             </label>
-            <label>
+            <label className="flex flex-col w-full mb-2">
               Price
               <input
-                id="price"
-                name="price"
                 type="text"
                 placeholder="Add price"
                 className="p-1 border rounded"
@@ -120,11 +125,9 @@ const AddMenuModel = ({ isVisible, onClose, fetchData }) => {
                 required
               />
             </label>
-            <label>
+            <label className="flex flex-col w-full mb-2">
               Description
               <input
-                id="description"
-                name="description"
                 type="text"
                 placeholder="Add description"
                 className="p-1 border rounded"
@@ -134,11 +137,9 @@ const AddMenuModel = ({ isVisible, onClose, fetchData }) => {
                 required
               />
             </label>
-            <label htmlFor="upload">
+            <label className="flex flex-col w-full mb-2">
               Picture
               <input
-                id="picture"
-                name="picture"
                 type="file"
                 className="p-1 border rounded"
                 accept="image/*"
@@ -155,8 +156,12 @@ const AddMenuModel = ({ isVisible, onClose, fetchData }) => {
                 />
               </div>
             )}
+            {errorMessage && <div className="text-red-500">{errorMessage}</div>}
             {isUploading ? (
-              <button className="p-2 mt-4 text-white bg-pink-500 rounded">
+              <button
+                className="p-2 mt-4 text-white bg-pink-500 rounded"
+                disabled
+              >
                 Uploading...
               </button>
             ) : (
