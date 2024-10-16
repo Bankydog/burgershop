@@ -1,3 +1,4 @@
+import React from "react";
 import AdminNavbar from "../navbar/AdminNavbar.jsx";
 import { Link } from "react-router-dom";
 
@@ -5,7 +6,7 @@ export default function HomePageAdmin() {
   return (
     <>
       <AdminNavbar />
-      <div className="flex items-center justify-center w-screen h-screen space-x-[100px]">
+      <div className="flex flex-col items-center justify-center h-screen gap-5 smm:grid smm:grid-cols-2 smm:gap-4 md:flex md:flex-row md:space-x-20">
         <Link to={"/menumanagement"}>
           <div className="flex flex-col items-center gap-3">
             <img
