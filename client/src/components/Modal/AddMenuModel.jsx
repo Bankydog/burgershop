@@ -1,34 +1,52 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { usePost } from "../../hook/usePostsAPI.jsx";
 import SuccessfulModal from "./SuccessfulModal.jsx";
 import imageCompression from "browser-image-compression";
 
 const AddMenuModel = ({ isVisible, onClose, fetchData }) => {
-  if (!isVisible) {
-    return null;
-  }
+  if (!isVisible) return null;
 
   const [showModal, setShowModal] = useState(false);
   const [name, setName] = useState("");
   const [catalog, setCatalog] = useState("");
   const [price, setPrice] = useState("");
   const [picture, setPicture] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [description, setDescription] = useState("");
   const [isUploading, setIsUploading] = useState(false);
+  const closeButtonRef = useRef(null);
+
+  useEffect(() => {
+    if (picture) {
+      const objectUrl = URL.createObjectURL(picture);
+      setPreview(objectUrl);
+      return () => URL.revokeObjectURL(objectUrl);
+    }
+  }, [picture]);
+
+  useEffect(() => {
+    if (isVisible && closeButtonRef.current) {
+      closeButtonRef.current.focus();
+    }
+  }, [isVisible]);
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      try {
-        const compressedFile = await imageCompression(file, {
-          maxSizeMB: 1,
-          maxWidthOrHeight: 1024,
-          useWebWorker: true,
-        });
-        setPicture(compressedFile);
-      } catch (error) {
-        console.error("Error compressing file:", error);
-      }
+    if (!file?.type.startsWith("image/")) {
+      alert("Please upload a valid image file.");
+      return;
+    }
+
+    try {
+      const compressedFile = await imageCompression(file, {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1024,
+        useWebWorker: true,
+      });
+      setPicture(compressedFile);
+    } catch (error) {
+      alert("Failed to compress the image. Please try another file.");
+      console.error("Error compressing file:", error);
     }
   };
 
@@ -50,6 +68,7 @@ const AddMenuModel = ({ isVisible, onClose, fetchData }) => {
       setShowModal(true);
       fetchData();
     } catch (error) {
+      alert("Failed to add menu. Please try again.");
       console.error("Error adding menu:", error);
     } finally {
       setIsUploading(false);
@@ -62,14 +81,15 @@ const AddMenuModel = ({ isVisible, onClose, fetchData }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-25 backdrop-blur-sm">
       <div className="w-[600px] flex flex-col">
         <form onSubmit={handleSubmit}>
-          <div className="w-full bg-white p-2 rounded flex flex-col justify-center items-center">
+          <div className="flex flex-col items-center justify-center w-full p-2 bg-white rounded">
             <button
               type="button"
-              className="text-black text-xl mr-2 pb-2 self-end"
+              className="self-end pb-2 mr-2 text-xl text-black"
               onClick={onClose}
+              ref={closeButtonRef}
             >
               X
             </button>
@@ -81,7 +101,7 @@ const AddMenuModel = ({ isVisible, onClose, fetchData }) => {
                 name="name"
                 type="text"
                 placeholder="Add name of menu"
-                className="border p-1 rounded"
+                className="p-1 border rounded"
                 onChange={(e) => setName(e.target.value)}
                 value={name}
                 required
@@ -92,7 +112,7 @@ const AddMenuModel = ({ isVisible, onClose, fetchData }) => {
               <select
                 id="catalog"
                 name="catalog"
-                className="border p-1 rounded"
+                className="p-1 border rounded"
                 onChange={(e) => setCatalog(e.target.value)}
                 value={catalog}
                 required
@@ -114,7 +134,9 @@ const AddMenuModel = ({ isVisible, onClose, fetchData }) => {
                 name="price"
                 type="text"
                 placeholder="Add price"
-                className="border p-1 rounded"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                className="p-1 border rounded"
                 onChange={(e) => setPrice(e.target.value)}
                 value={price}
                 required
@@ -127,7 +149,7 @@ const AddMenuModel = ({ isVisible, onClose, fetchData }) => {
                 name="description"
                 type="text"
                 placeholder="Add description"
-                className="border p-1 rounded"
+                className="p-1 border rounded"
                 maxLength="100"
                 onChange={(e) => setDescription(e.target.value)}
                 value={description}
@@ -140,33 +162,37 @@ const AddMenuModel = ({ isVisible, onClose, fetchData }) => {
                 id="picture"
                 name="picture"
                 type="file"
-                className="border p-1 rounded"
+                className="p-1 border rounded"
                 accept="image/*"
                 onChange={handleFileChange}
                 required
               />
             </label>
-            {picture && (
+            {preview && (
               <div className="mt-2">
                 <img
-                  src={URL.createObjectURL(picture)}
+                  src={preview}
                   alt="Uploaded"
-                  className="w-32 h-32 object-cover rounded"
+                  className="object-cover w-32 h-32 rounded"
                 />
               </div>
             )}
-            {isUploading ? (
-              <button className="mt-4 p-2 bg-pink-500 text-white rounded">
-                Uploading...
-              </button>
-            ) : (
-              <button
-                type="submit"
-                className="mt-4 p-2 bg-blue-500 text-white rounded"
-              >
-                Add Menu
-              </button>
-            )}
+            <button
+              type="submit"
+              className={`mt-4 p-2 ${
+                isUploading ? "bg-gray-300" : "bg-blue-500"
+              } text-white rounded`}
+              disabled={
+                isUploading ||
+                !name ||
+                !catalog ||
+                !price ||
+                !description ||
+                !picture
+              }
+            >
+              {isUploading ? "Uploading..." : "Add Menu"}
+            </button>
           </div>
           <SuccessfulModal isVisible={showModal} onClose={handleModalClose} />
         </form>
