@@ -61,7 +61,7 @@ function ProfilePage() {
       <Header />
       <Navbar />
       {isLoading ? (
-        <div className="h-screen w-full flex justify-center items-center">
+        <div className="flex items-center justify-center w-full h-screen">
           <TailSpin
             visible={true}
             height="80"
@@ -74,8 +74,8 @@ function ProfilePage() {
           />
         </div>
       ) : (
-        <div className="h-screen w-full flex flex-col items-center p-4">
-          <h1 className="text-2xl mb-4">Profile</h1>
+        <div className="flex flex-col items-center w-full h-screen p-4">
+          <h1 className="mb-4 text-2xl">Profile</h1>
           <form onSubmit={handleSubmit} className="w-full max-w-lg">
             <div className="mb-4">
               <label htmlFor="name" className="block text-lg">
@@ -89,7 +89,7 @@ function ProfilePage() {
                 required
                 value={profile.name}
                 onChange={handleChange}
-                className="border p-2 w-full rounded-md"
+                className="w-full p-2 border rounded-md"
               />
             </div>
             <div className="mb-4">
@@ -104,7 +104,7 @@ function ProfilePage() {
                 required
                 value={profile.lastname}
                 onChange={handleChange}
-                className="border p-2 w-full rounded-md"
+                className="w-full p-2 border rounded-md"
               />
             </div>
             <div className="mb-4">
@@ -119,7 +119,7 @@ function ProfilePage() {
                 required
                 value={profile.address}
                 onChange={handleChange}
-                className="border p-2 w-full rounded-md"
+                className="w-full p-2 border rounded-md"
               />
             </div>
             <div className="mb-4">
@@ -134,7 +134,7 @@ function ProfilePage() {
                 required
                 value={profile.telephone}
                 onChange={handleChange}
-                className="border p-2 w-full rounded-md"
+                className="w-full p-2 border rounded-md"
               />
             </div>
             <div className="mb-4">
@@ -149,10 +149,10 @@ function ProfilePage() {
                 required
                 value={profile.email}
                 onChange={handleChange}
-                className="border p-2 w-full rounded-md"
+                className="w-full p-2 border rounded-md"
               />
             </div>
-            <button type="submit" className="bg-blue-500 text-white p-2 mt-4">
+            <button type="submit" className="p-2 mt-4 text-white bg-blue-500">
               Submit
             </button>
           </form>
