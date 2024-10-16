@@ -51,7 +51,7 @@ export default function MenuManagement() {
           />
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center w-full h-auto">
+        <div className="flex flex-col items-center justify-center">
           <AdminNavbar />
           <button
             className="w-[100px] h-[100px] text-white font-medium mt-5 bg-green-500 rounded hover:bg-slate-400"
