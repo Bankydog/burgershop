@@ -106,7 +106,8 @@ const CartPage = () => {
             />
           </div>
         ) : (
-          <div className="flex flex-grow">
+          <div className="flex flex-col flex-grow lgg:flex lgg:flex-row">
+            {/* Left side */}
             <div className="flex-1 p-6 overflow-y-auto">
               {cartItems.length === 0 ? (
                 <div className="flex flex-col items-center h-full">
@@ -167,7 +168,8 @@ const CartPage = () => {
                 </div>
               )}
             </div>
-            <div className="w-1/3 p-6 bg-white border border-gray-200 rounded-lg shadow-md">
+            {/* Left side */}
+            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-md ">
               <div className="mb-4 text-2xl font-semibold text-gray-800">
                 Order Summary
               </div>
@@ -207,32 +209,36 @@ const CartPage = () => {
                     value={comment}
                     onChange={handleCommentChange}
                   />
-                  {isUpload ? (
-                    <button
-                      className={`mt-2 px-4 py-2 bg-pink-500 text-white font-semibold rounded-lg shadow-md
+                  <div className="flex justify-center lgg:justify-start">
+                    {isUpload ? (
+                      <button
+                        className={`mt-2 px-4 py-2 bg-pink-500 text-white font-semibold rounded-lg shadow-md
                     `}
-                    >
-                      Uploading...
-                    </button>
-                  ) : (
-                    <button
-                      className={`mt-2 px-4 py-2 ${
-                        profileData?.address && cartItems.length > 0
-                          ? "bg-blue-500"
-                          : "bg-gray-500"
-                      } text-white font-semibold rounded-lg shadow-md
+                      >
+                        Uploading...
+                      </button>
+                    ) : (
+                      <button
+                        className={`mt-2 px-4 py-2 ${
+                          profileData?.address && cartItems.length > 0
+                            ? "bg-blue-500"
+                            : "bg-gray-500"
+                        } text-white font-semibold rounded-lg shadow-md
                       hover:${
                         profileData?.address && cartItems.length > 0
                           ? "bg-blue-600"
                           : "bg-gray-600"
                       }
                         focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                      onClick={handleSubmit}
-                      disabled={!profileData?.address || cartItems.length === 0}
-                    >
-                      Confirm
-                    </button>
-                  )}
+                        onClick={handleSubmit}
+                        disabled={
+                          !profileData?.address || cartItems.length === 0
+                        }
+                      >
+                        Confirm
+                      </button>
+                    )}
+                  </div>
                   {profileData?.address ? null : (
                     <span className="ml-5 text-2xl font-extrabold">
                       <Link to="/profile" className="text-blue-500 underline">

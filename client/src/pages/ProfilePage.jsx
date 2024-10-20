@@ -75,88 +75,44 @@ function ProfilePage() {
           />
         </div>
       ) : (
-        <div className="flex flex-col items-center w-full h-screen p-4">
-          <h1 className="mb-4 text-2xl">Profile</h1>
-          <form onSubmit={handleSubmit} className="w-full max-w-lg">
-            <div className="mb-4">
-              <label htmlFor="name" className="block text-lg">
-                Name:
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                placeholder="Enter name"
-                required
-                value={profile.name}
-                onChange={handleChange}
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="lastname" className="block text-lg">
-                Last Name:
-              </label>
-              <input
-                type="text"
-                id="lastname"
-                name="lastname"
-                placeholder="Enter last name"
-                required
-                value={profile.lastname}
-                onChange={handleChange}
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="address" className="block text-lg">
-                Address:
-              </label>
-              <input
-                type="text"
-                id="address"
-                name="address"
-                placeholder="Enter address"
-                required
-                value={profile.address}
-                onChange={handleChange}
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="telephone" className="block text-lg">
-                Telephone:
-              </label>
-              <input
-                type="tel"
-                id="telephone"
-                name="telephone"
-                placeholder="Enter telephone"
-                required
-                value={profile.telephone}
-                onChange={handleChange}
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="email" className="block text-lg">
-                Email:
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="Enter email"
-                required
-                value={profile.email}
-                onChange={handleChange}
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-            <button type="submit" className="p-2 mt-4 text-white bg-blue-500">
-              Submit
-            </button>
-          </form>
+        <div className="flex items-center justify-center w-auto h-screen p-4 bg-gray-100">
+          <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg mt-14 md:mb-64 ">
+            <h1 className="mb-6 text-2xl font-bold text-center">Profile</h1>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+              {[
+                { id: "name", label: "Name", type: "text" },
+                { id: "lastname", label: "Last Name", type: "text" },
+                { id: "address", label: "Address", type: "text" },
+                { id: "telephone", label: "Telephone", type: "tel" },
+                { id: "email", label: "Email", type: "email" },
+              ].map(({ id, label, type }) => (
+                <div key={id}>
+                  <label
+                    htmlFor={id}
+                    className="block mb-2 text-sm font-medium"
+                  >
+                    {label}:
+                  </label>
+                  <input
+                    type={type}
+                    id={id}
+                    name={id}
+                    placeholder={`Enter ${label.toLowerCase()}`}
+                    required
+                    value={profile[id]}
+                    onChange={handleChange}
+                    className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              ))}
+              <button
+                type="submit"
+                className="w-full py-3 text-white transition bg-blue-500 rounded hover:bg-blue-600"
+              >
+                Submit
+              </button>
+            </form>
+          </div>
         </div>
       )}
       <SuccessfulModal

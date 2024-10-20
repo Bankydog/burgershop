@@ -71,7 +71,7 @@ const StatusPage = () => {
     <>
       <Header />
       <Navbar />
-      <div className="flex flex-col items-center w-full h-screen p-6">
+      <div className="flex flex-col items-center w-full h-screen p-6 bg-gray-100">
         <h1 className="mb-4 text-2xl font-bold">Order Status</h1>
         {orderData.length > 0 ? (
           <div className="w-full max-w-2xl p-6 bg-white rounded-lg shadow-md">
@@ -80,6 +80,11 @@ const StatusPage = () => {
                 <h2 className="mb-2 text-xl font-semibold">
                   Order Number: {order.order_no}
                 </h2>
+                <img
+                  src={`../public/img/${order.state}.png`}
+                  alt={order.state}
+                  className="w-[100px] mx-auto my-5"
+                />
                 <p>
                   <strong>Status:</strong> {order.state}
                 </p>

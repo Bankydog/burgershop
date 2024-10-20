@@ -8,71 +8,73 @@ export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const { login } = useAuth();
-
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    login({
-      username,
-      password,
-    });
+    login({ username, password });
   };
 
   return (
     <>
       <Header />
       <Navbar />
-      <div className="h-screen w-full flex justify-center items-center">
-        <div className="h-[300px] w-[550px] flex flex-col justify-end items-center border-4 border-sky-500 p-4">
-          <h1>Login</h1>
-          <form className="mt-4" onSubmit={handleSubmit}>
+      <div className="flex items-center justify-center w-auto h-screen p-4 bg-gray-100">
+        <div className="w-full max-w-md p-8 mb-32 bg-white rounded-lg shadow-lg md:mb-96">
+          <h1 className="mb-6 text-2xl font-bold text-center">Login</h1>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             <div>
-              <label htmlFor="username" className="block">
-                Username:
-                <input
-                  type="text"
-                  id="username"
-                  name="username"
-                  placeholder="Enter username"
-                  className="ml-3 border p-1"
-                  onChange={(e) => setUsername(e.target.value)}
-                  value={username}
-                />
-              </label>
-            </div>
-            <div className="mt-2">
-              <label htmlFor="password" className="block">
-                Password:
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  placeholder="Enter password"
-                  className="ml-4 border p-1"
-                  onChange={(e) => setPassword(e.target.value)}
-                  value={password}
-                />
-              </label>
-            </div>
-            <div className="mt-4">
-              <button
-                type="submit"
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              <label
+                htmlFor="username"
+                className="block mb-2 text-sm font-medium"
               >
-                Login
-              </button>
+                Username
+              </label>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                placeholder="Enter username"
+                required
+                onChange={(e) => setUsername(e.target.value)}
+                value={username}
+                className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
             </div>
-          </form>
-          <div className="mt-4">
-            <span>Don't have an account?</span>
+            <div>
+              <label
+                htmlFor="password"
+                className="block mb-2 text-sm font-medium"
+              >
+                Password
+              </label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter password"
+                required
+                onChange={(e) => setPassword(e.target.value)}
+                value={password}
+                className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
             <button
-              className="text-blue-500 hover:underline ml-2"
+              type="submit"
+              className="w-full py-3 text-white transition bg-blue-500 rounded hover:bg-blue-600"
+            >
+              Login
+            </button>
+          </form>
+          <p className="mt-4 text-center">
+            Don't have an account?{" "}
+            <button
               onClick={() => navigate("/register")}
+              className="text-blue-500 hover:underline"
             >
               Sign up
             </button>
-          </div>
+          </p>
         </div>
       </div>
     </>
