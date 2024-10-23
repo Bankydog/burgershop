@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Header from "../components/header/Header.jsx";
 import Navbar from "../navbar/navbar.jsx";
+import Navbar2 from "../navbar/Navbar2.jsx";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/Authentication.jsx";
 
@@ -77,6 +78,7 @@ export default function LoginPage() {
           </p>
         </div>
       </div>
+      <Navbar2 />
     </>
   );
 }

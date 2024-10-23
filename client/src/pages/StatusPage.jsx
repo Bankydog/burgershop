@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Header from "../components/header/Header.jsx";
 import Navbar from "../navbar/navbar.jsx";
+import Navbar2 from "../navbar/Navbar2.jsx";
 import { TailSpin } from "react-loader-spinner";
 import { useAuth } from "../context/Authentication.jsx";
 
@@ -71,7 +72,7 @@ const StatusPage = () => {
     <>
       <Header />
       <Navbar />
-      <div className="flex flex-col items-center w-full h-screen p-6 bg-gray-100">
+      <div className="flex flex-col items-center w-full h-[850px] p-6 bg-gray-100">
         <h1 className="mb-4 text-2xl font-bold">Order Status</h1>
         {orderData.length > 0 ? (
           <div className="w-full max-w-2xl p-6 bg-white rounded-lg shadow-md">
@@ -123,6 +124,7 @@ const StatusPage = () => {
           <p>No order data available.</p>
         )}
       </div>
+      <Navbar2 />
     </>
   );
 };

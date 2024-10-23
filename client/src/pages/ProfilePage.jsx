@@ -2,6 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import Header from "../components/header/Header.jsx";
 import Navbar from "../navbar/navbar.jsx";
+import Navbar2 from "../navbar/Navbar2.jsx";
 import { TailSpin } from "react-loader-spinner";
 import { useAuth } from "../context/Authentication.jsx";
 import { usePost } from "../hook/usePostsAPI.jsx";
@@ -75,8 +76,8 @@ function ProfilePage() {
           />
         </div>
       ) : (
-        <div className="flex items-center justify-center w-auto h-screen p-4 bg-gray-100">
-          <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg mt-14 md:mb-64 ">
+        <div className="sm:flex sm:items-center sm:justify-center  w-auto h-[740px] items-start sm:h-screen p-4 bg-gray-100">
+          <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg sn:mt-14 md:mb-64 ">
             <h1 className="mb-6 text-2xl font-bold text-center">Profile</h1>
             <form onSubmit={handleSubmit} className="flex flex-col gap-6">
               {[
@@ -119,6 +120,7 @@ function ProfilePage() {
         isVisible={showModal}
         onClose={() => setShowModal(false)}
       />
+      <Navbar2 />
     </>
   );
 }

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 export default function UnAuthNavbar() {
   return (
-    <div className="w-full h-[50px] flex justify-between items-center bg-red-500">
+    <div className="hidden w-full h-[50px] sn:flex sn:justify-between sn:items-center bg-red-500">
       <div></div>
       <div className="">
         <ul className="flex p-4 space-x-4 text-xl">

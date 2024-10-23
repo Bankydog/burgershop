@@ -12,6 +12,7 @@ export default {
 
       // Custom screen size
       smm: "350px", // => @media (min-width: 350px) { ... }
+      snn: "376px", // => @media (min-width: 376px) { ... }
       sn: "430px", // => @media (min-width: 430px) { ... }
       lgg: "1200px", // => @media (min-width: 1200px) { ... }
     },

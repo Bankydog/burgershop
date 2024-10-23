@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Header from "../components/header/Header.jsx";
 import Navbar from "../navbar/navbar.jsx";
+import Navbar2 from "../navbar/Navbar2.jsx";
 import { useAuth } from "../context/Authentication.jsx";
 import { useNavigate } from "react-router-dom";
 
@@ -89,6 +90,7 @@ export default function RegisterPage() {
           </p>
         </div>
       </div>
+      <Navbar2 />
     </>
   );
 }

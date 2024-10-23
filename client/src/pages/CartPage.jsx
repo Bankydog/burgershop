@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Header from "../components/header/Header.jsx";
 import Navbar from "../navbar/navbar.jsx";
+import Navbar2 from "../navbar/Navbar2.jsx";
 import { TailSpin } from "react-loader-spinner";
 import { useCartItem } from "../hook/cartItem.jsx";
 import { usePost } from "../hook/usePostsAPI.jsx";
@@ -121,63 +122,65 @@ const CartPage = () => {
                   </p>
                 </div>
               ) : (
-                <div className="flex flex-col space-y-1">
-                  {cartItems.map((item) => (
-                    <div
-                      key={`${item.catalog_id}-${item.amount}`}
-                      className="flex items-center justify-between w-auto p-4 bg-white border border-gray-200 rounded-lg shadow-md"
-                    >
-                      <img
-                        src={item.image_url}
-                        alt={item.food_name}
-                        className="rounded w-36 h-36"
-                      />
-                      {/* text */}
-                      <div className="flex flex-col w-auto ml-1 space-y-5 sm:space-y-0 sm:flex sm:flex-row">
-                        <div className="flex-1 mx-4">
-                          <div className="text-lg font-semibold text-gray-800">
-                            {item.food_name}
-                          </div>
-                          <div className="text-gray-600 text-md">
-                            Price: {item.price} Bath
-                          </div>
-                        </div>
-                        {/* button */}
-                        <div className="flex flex-col items-center gap-5 sm:flex sm:flex-row">
-                          <div className="flex items-center gap-5 sm:gap-10">
-                            <button
-                              onClick={() => handleDecrease(item.catalog_id)}
-                              className="w-[50px] h-[50px] px-4 text-xl border-solid border-2 rounded-2xl shadow-lg hover:bg-sky-100 active:bg-sky-300 active:border-none"
-                            >
-                              -
-                            </button>
-                            <div className="text-lg font-bold text-gray-800">
-                              {item.amount}
+                <div className="flex justify-center">
+                  <div className="flex flex-col space-y-1 md:w-full">
+                    {cartItems.map((item) => (
+                      <div
+                        key={`${item.catalog_id}-${item.amount}`}
+                        className="flex items-center justify-between w-auto p-4 bg-white border border-gray-200 rounded-lg shadow-md"
+                      >
+                        <img
+                          src={item.image_url}
+                          alt={item.food_name}
+                          className="rounded w-36 h-36"
+                        />
+                        {/* text */}
+                        <div className="flex flex-col w-auto ml-1 space-y-5 sm:space-y-0 sm:flex sm:flex-row">
+                          <div className="flex-1 mx-4">
+                            <div className="text-lg font-semibold text-gray-800">
+                              {item.food_name}
                             </div>
-                            <button
-                              onClick={() => handleIncrease(item.catalog_id)}
-                              className="w-[50px] h-[50px] px-4 text-xl border-solid border-2 rounded-2xl shadow-lg hover:bg-sky-100 active:bg-sky-300 active:border-none"
-                            >
-                              +
-                            </button>
+                            <div className="text-gray-600 text-md">
+                              Price: {item.price} Bath
+                            </div>
                           </div>
-                          <div>
-                            <button
-                              onClick={() => handleRemove(item.catalog_id)}
-                              className="w-[100px] h-[50px] px-4 text-xl text-white bg-rose-500 border-solid border-2 rounded-2xl shadow-lg hover:bg-red-700 active:bg-rose-500 active:border-none active:text-yellow-300"
-                            >
-                              Delete
-                            </button>
+                          {/* button */}
+                          <div className="flex flex-col items-center gap-5 sm:flex sm:flex-row">
+                            <div className="flex items-center gap-5 sm:gap-10">
+                              <button
+                                onClick={() => handleDecrease(item.catalog_id)}
+                                className="w-[50px] h-[50px] px-4 text-xl border-solid border-2 rounded-2xl shadow-lg hover:bg-sky-100 active:bg-sky-300 active:border-none"
+                              >
+                                -
+                              </button>
+                              <div className="text-lg font-bold text-gray-800">
+                                {item.amount}
+                              </div>
+                              <button
+                                onClick={() => handleIncrease(item.catalog_id)}
+                                className="w-[50px] h-[50px] px-4 text-xl border-solid border-2 rounded-2xl shadow-lg hover:bg-sky-100 active:bg-sky-300 active:border-none"
+                              >
+                                +
+                              </button>
+                            </div>
+                            <div>
+                              <button
+                                onClick={() => handleRemove(item.catalog_id)}
+                                className="w-[100px] h-[50px] px-4 text-xl text-white bg-rose-500 border-solid border-2 rounded-2xl shadow-lg hover:bg-red-700 active:bg-rose-500 active:border-none active:text-yellow-300"
+                              >
+                                Delete
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
             {/* right side */}
-            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-md ">
+            <div className="h-[510px] sm:h-auto p-6 bg-white border border-gray-200 rounded-lg shadow-md ">
               <div className="mb-4 text-2xl font-semibold text-gray-800">
                 Order Summary
               </div>
@@ -258,6 +261,7 @@ const CartPage = () => {
                 </div>
               </div>
             </div>
+            <Navbar2 />
           </div>
         )}
       </div>
