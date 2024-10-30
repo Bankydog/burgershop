@@ -20,7 +20,7 @@ function Dropdown({ state, logout }) {
         </div>
       )}
       {open && (
-        <ul className="absolute h-[180px] mb-3 bg-blue-100 rounded shadow-lg bottom-full sm:top-full sm:mt-2">
+        <ul className="absolute h-[180px] mb-3 bg-blue-100 rounded shadow-lg bottom-full lgg:top-full sm:mt-2">
           {items.map((item, index) => (
             <li key={index} className="p-2 hover:bg-sky-200 hover:rounded">
               <Link to={item.action} className="text-black">
