@@ -8,8 +8,11 @@ export default function AuthNavbar() {
   const { cartItems, hasItemCart } = useCartItem();
 
   return (
-    <div className="w-full h-[50px] flex justify-center bottom-0 fixed sm:relative sm:bottom-auto sm:top-0 sm:flex sm:justify-end text-xl font-semibold bg-red-500">
-      <div className="flex w-[350px] justify-around sm:w-auto mt-2 text-xl">
+    <div className="w-full h-[50px] flex justify-center bottom-0 fixed lgg:relative lgg:bottom-auto lgg:top-0 lgg:flex lgg:justify-end text-xl font-semibold bg-red-500">
+      <div
+        className="flex justify-around w-auto mt-2 text-xl
+      smm:w-[1150px] lgg:w-[300px]"
+      >
         <Link to="/cart">
           <div className="w-[50px] self-center flex justify-center cursor-pointer">
             <img
@@ -33,7 +36,6 @@ export default function AuthNavbar() {
         >
           Home
         </Link>
-
         <Dropdown state={state} logout={logout} />
       </div>
     </div>

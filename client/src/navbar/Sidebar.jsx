@@ -18,7 +18,7 @@ function Sidebar({ setKeyword }) {
     <nav className="relative">
       {/* Hamburger button */}
       <button
-        className="flex items-center p-2 bg-yellow-500 rounded-lg md:hidden"
+        className="flex items-center p-2 bg-yellow-500 rounded-lg lgg:hidden"
         onClick={toggleMenu}
       >
         <svg
@@ -39,12 +39,12 @@ function Sidebar({ setKeyword }) {
 
       {/* Sliding menu with transparent background */}
       <div
-        className={`fixed top-0 left-0 h-full w-64 bg-yellow-400 bg-opacity-50 backdrop-blur-md transform ${
+        className={`fixed top-0 left-0 h-full w-64 bg-white lgg:bg-transparent bg-opacity-50 backdrop-blur-md transform ${
           isOpen ? "translate-x-0" : "-translate-x-full"
-        } transition-transform duration-300 ease-in-out md:translate-x-0 md:relative md:w-[300px]`}
+        } transition-transform duration-300 ease-in-out lgg:translate-x-0 lgg:relative lgg:w-[300px]`}
       >
         <button
-          className="absolute text-3xl font-bold text-white top-4 right-4 md:hidden"
+          className="absolute text-3xl font-bold text-white top-4 right-4 lgg:hidden"
           onClick={toggleMenu}
         >
           &times;

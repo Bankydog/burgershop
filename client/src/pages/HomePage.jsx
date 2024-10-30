@@ -48,8 +48,8 @@ export default function HomePage() {
             wrapperClass=""
           />
         ) : (
-          <div className="flex flex-col w-full h-screen border sm:flex-row sm:h-screen ">
-            <div className="w-[25%] flex lgg:flex-col   ">
+          <div className="flex flex-col w-full h-screen bg-yellow-300 border lgg:flex-row lgg:h-screen">
+            <div className="w-[25%] flex items-center lgg:flex-col">
               <Sidebar setKeyword={setKeyword} />
             </div>
             <div className="w-full">
