@@ -36,7 +36,7 @@ export default function AdminCookCard({
           {/* Right Column - State Image */}
           <div className="flex justify-center mt-4">
             <img
-              src={`../public/img/${order.state}.png`}
+              src={`/img/${order.state}.png`}
               alt={order.state}
               className="object-cover w-20 h-20 rounded"
             />

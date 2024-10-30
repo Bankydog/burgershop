@@ -39,7 +39,7 @@ export default function AdminRiderCard({
             {/* Content - Right Column */}
             <div className="w-[100px] h-[100px] mt-4 flex flex-col items-center justify-center place-self-center">
               <img
-                src={`../public/img/${order.state}.png`}
+                src={`/img/${order.state}.png`}
                 alt={order.state}
                 className="object-cover w-full h-full rounded"
               />

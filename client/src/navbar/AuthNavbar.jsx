@@ -16,7 +16,7 @@ export default function AuthNavbar() {
         <Link to="/cart">
           <div className="w-[50px] self-center flex justify-center cursor-pointer">
             <img
-              src="/public/img/cartIcon.png"
+              src="/img/carticon.png"
               className="static mr-4 size-10"
               alt="cart-icon"
             />
