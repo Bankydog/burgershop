@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import Header from "../components/header/Header.jsx";
 import Navbar from "../navbar/navbar.jsx";
-import Navbar2 from "../navbar/Navbar2.jsx";
 import { TailSpin } from "react-loader-spinner";
 import { useCartItem } from "../hook/cartItem.jsx";
 import { usePost } from "../hook/usePostsAPI.jsx";
@@ -261,7 +260,6 @@ const CartPage = () => {
                 </div>
               </div>
             </div>
-            <Navbar2 />
           </div>
         )}
       </div>

@@ -8,10 +8,10 @@ export default function AuthNavbar() {
   const { cartItems, hasItemCart } = useCartItem();
 
   return (
-    <div className="w-full h-[50px] hidden sm:flex sm:justify-end text-xl font-semibold bg-red-500">
-      <div className="flex w-auto mt-2 text-xl">
+    <div className="w-full h-[50px] flex justify-center bottom-0 fixed sm:relative sm:bottom-auto sm:top-0 sm:flex sm:justify-end text-xl font-semibold bg-red-500">
+      <div className="flex w-[350px] justify-around sm:w-auto mt-2 text-xl">
         <Link to="/cart">
-          <div className="w-[50px] self-center flex justify-between mr-2 cursor-pointer">
+          <div className="w-[50px] self-center flex justify-center cursor-pointer">
             <img
               src="../public/img/cartIcon.png"
               className="static mr-4 size-10"

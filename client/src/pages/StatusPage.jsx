@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Header from "../components/header/Header.jsx";
 import Navbar from "../navbar/navbar.jsx";
-import Navbar2 from "../navbar/Navbar2.jsx";
 import { TailSpin } from "react-loader-spinner";
 import { useAuth } from "../context/Authentication.jsx";
 
@@ -124,7 +123,6 @@ const StatusPage = () => {
           <p>No order data available.</p>
         )}
       </div>
-      <Navbar2 />
     </>
   );
 };
