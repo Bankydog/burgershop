@@ -10,7 +10,7 @@ export default function HomePageAdmin() {
         <Link to={"/menumanagement"}>
           <div className="flex flex-col items-center gap-3">
             <img
-              src="../public/img/burger.png"
+              src="/img/burger.png"
               alt="menu-management"
               className="h-[100px] w-[100px]"
             />
@@ -20,7 +20,7 @@ export default function HomePageAdmin() {
         <Link to={"/cooking"}>
           <div className="flex flex-col items-center gap-3">
             <img
-              src="../public/img/cooking.png"
+              src="/img/cooking.png"
               alt="menu-management"
               className="h-[100px] w-[100px]"
             />
@@ -30,7 +30,7 @@ export default function HomePageAdmin() {
         <Link to={"/rider"}>
           <div className="flex flex-col items-center gap-3">
             <img
-              src="../public/img/rider.png"
+              src="/img/rider.png"
               alt="menu-management"
               className="h-[100px] w-[100px]"
             />
@@ -40,7 +40,7 @@ export default function HomePageAdmin() {
         <Link to={"/statistics"}>
           <div className="flex flex-col items-center gap-3">
             <img
-              src="../public/img/statistics.png"
+              src="/img/statistics.png"
               alt="menu-management"
               className="h-[100px] w-[100px]"
             />
