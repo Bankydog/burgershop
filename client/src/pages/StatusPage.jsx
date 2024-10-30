@@ -81,7 +81,7 @@ const StatusPage = () => {
                   Order Number: {order.order_no}
                 </h2>
                 <img
-                  src={`../public/img/${order.state}.png`}
+                  src={`/img/${order.state}.png`}
                   alt={order.state}
                   className="w-[100px] mx-auto my-5"
                 />
