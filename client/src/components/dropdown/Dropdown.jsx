@@ -5,22 +5,22 @@ function Dropdown({ state, logout }) {
   const items = [
     { label: "Cart", action: "/cart" },
     { label: "Profile", action: "/profile" },
-    { label: "Status", action: "/status" },
+    { label: "Order", action: "/status" },
   ];
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="z-0 mr-6">
+    <div className="relative z-10 sm:mr-6 w-[100px]">
       {state.user && (
         <div
           onClick={() => setOpen(!open)}
-          className="text-white cursor-pointer"
+          className="text-center text-white cursor-pointer"
         >
-          Welcome, {state.user.username}
+          {state.user.username}
         </div>
       )}
       {open && (
-        <ul className="mt-3 bg-white rounded shadow-lg dropdown-menu">
+        <ul className="absolute h-[180px] mb-3 bg-blue-100 rounded shadow-lg bottom-full sm:top-full sm:mt-2">
           {items.map((item, index) => (
             <li key={index} className="p-2 hover:bg-sky-200 hover:rounded">
               <Link to={item.action} className="text-black">

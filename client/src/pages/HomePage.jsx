@@ -35,7 +35,7 @@ export default function HomePage() {
     <>
       <Header />
       <Navbar />
-      <div className="h-screen w-full flex justify-center items-center">
+      <div className="flex items-center justify-center w-auto h-screen">
         {isLoading ? (
           <TailSpin
             visible={true}
@@ -48,8 +48,8 @@ export default function HomePage() {
             wrapperClass=""
           />
         ) : (
-          <div className="w-full h-full flex">
-            <div className="w-[25%] h-screen bg-yellow-400">
+          <div className="flex flex-col w-full h-screen border sm:flex-row sm:h-screen ">
+            <div className="w-[25%] flex lgg:flex-col   ">
               <Sidebar setKeyword={setKeyword} />
             </div>
             <div className="w-full">

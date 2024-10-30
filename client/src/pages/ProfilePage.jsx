@@ -75,8 +75,8 @@ function ProfilePage() {
           />
         </div>
       ) : (
-        <div className="flex items-center justify-center w-auto h-screen p-4 bg-gray-100">
-          <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg mt-14 md:mb-64 ">
+        <div className="sm:flex sm:items-center sm:justify-center  w-auto h-[760px] items-start sm:h-screen p-4 bg-gray-100">
+          <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg sn:mt-14 md:mb-64 ">
             <h1 className="mb-6 text-2xl font-bold text-center">Profile</h1>
             <form onSubmit={handleSubmit} className="flex flex-col gap-6">
               {[

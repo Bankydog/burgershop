@@ -12,8 +12,14 @@ export default {
 
       // Custom screen size
       smm: "350px", // => @media (min-width: 350px) { ... }
+      snn: "376px", // => @media (min-width: 376px) { ... }
       sn: "430px", // => @media (min-width: 430px) { ... }
+      snd: "570px", // => @media (min-width: 570px) { ... }
+      mdd: "730px", // => @media (min-width: 700px) { ... }
+      mx: "830px", // => @media (min-width: 830px) { ... }
       lgg: "1200px", // => @media (min-width: 1200px) { ... }
+      xll: "1380px", // => @media (min-width: 1380px) { ... }
+      xs: "1500px", // => @media (min-width: 1500px) { ... }
     },
   },
   plugins: [],

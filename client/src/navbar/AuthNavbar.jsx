@@ -8,13 +8,13 @@ export default function AuthNavbar() {
   const { cartItems, hasItemCart } = useCartItem();
 
   return (
-    <div className="w-full h-[50px] flex justify-end text-xl font-semibold bg-red-500">
-      <div className="w-auto flex mt-2">
+    <div className="w-full h-[50px] flex justify-center bottom-0 fixed sm:relative sm:bottom-auto sm:top-0 sm:flex sm:justify-end text-xl font-semibold bg-red-500">
+      <div className="flex w-[350px] justify-around sm:w-auto mt-2 text-xl">
         <Link to="/cart">
-          <div className="w-auto flex justify-between cursor-pointer mr-2">
+          <div className="w-[50px] self-center flex justify-center cursor-pointer">
             <img
               src="../public/img/cartIcon.png"
-              className="size-10 mr-4 static"
+              className="static mr-4 size-10"
               alt="cart-icon"
             />
             {hasItemCart() ? (
@@ -27,7 +27,10 @@ export default function AuthNavbar() {
             ) : null}
           </div>
         </Link>
-        <Link to="/" className="cursor-pointer text-white mr-6">
+        <Link
+          to="/"
+          className="w-[100px] flex justify-center text-white cursor-pointer "
+        >
           Home
         </Link>
 
